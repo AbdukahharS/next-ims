@@ -1,7 +1,10 @@
 import { Nunito } from 'next/font/google'
 
+import { Toaster } from '@/components/ui/toaster'
 import { ConvexClientProvider } from '@/components/providers/convex-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
+
+import './globals.css'
 
 const nunito = Nunito({ subsets: ['latin'] })
 
@@ -11,13 +14,8 @@ export const metadata = {
   generator: 'Next.js',
   manifest: '/manifest.json',
   keywords: ['nextjs', 'nextjs14', 'next14', 'pwa', 'next-pwa'],
-  themeColor: [{ media: '(prefers-color-scheme: dark)', color: '#fff' }],
   authors: [
-    { name: 'Alldo Faiz Ramadhani' },
-    {
-      name: 'Alldo Faiz Ramadhani',
-      url: 'https://www.linkedin.com/in/alldofaiz/',
-    },
+    { name: 'Shakhzodbek Kakhkhorov', url: 'https://github.com/AbdukahharS' },
   ],
   viewport:
     'minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover',
@@ -25,6 +23,10 @@ export const metadata = {
     { rel: 'apple-touch-icon', url: 'icons/icon-128x128.png' },
     { rel: 'icon', url: 'icons/icon-128x128.png' },
   ],
+}
+
+export const viewport = {
+  themeColor: [{ media: '(prefers-color-scheme: light)', color: '#fff' }],
 }
 
 export default function RootLayout({
@@ -40,7 +42,7 @@ export default function RootLayout({
         <meta name='generator' content={metadata.generator} />
         <link rel='manifest' href={metadata.manifest} />
         <meta name='keywords' content={metadata.keywords.join(', ')} />
-        {metadata.themeColor.map(({ media, color }, index) => (
+        {viewport.themeColor.map(({ media, color }, index) => (
           <meta key={index} name='theme-color' media={media} content={color} />
         ))}
         {metadata.authors.map(({ name, url }, index) => (
@@ -60,11 +62,12 @@ export default function RootLayout({
         <ConvexClientProvider>
           <ThemeProvider
             attribute='class'
-            defaultTheme='system'
+            defaultTheme='light'
             enableSystem
             storageKey='next-pms-theme'
           >
             {children}
+            <Toaster />
           </ThemeProvider>
         </ConvexClientProvider>
       </body>
