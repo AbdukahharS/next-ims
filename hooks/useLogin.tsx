@@ -3,12 +3,11 @@
 import { useEffect, useState } from 'react'
 
 const useLogin = () => {
-  const [loading, setLoading] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(true)
-
-  console.log(isAuthenticated)
+  const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
+    setLoading(true)
     // Check session storage for auth token on initial load
     const token = sessionStorage.getItem('authToken')
     if (token === process.env.NEXT_PUBLIC_AUTH_TOKEN) {
@@ -16,6 +15,8 @@ const useLogin = () => {
     } else {
       setIsAuthenticated(false)
     }
+
+    setLoading(false)
   }, [])
 
   const login = (username: string, password: string) => {
