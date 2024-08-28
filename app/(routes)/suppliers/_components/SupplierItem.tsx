@@ -2,13 +2,16 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Check, Pencil } from 'lucide-react'
+import { useMutation } from 'convex/react'
 
+import { Id } from '@/convex/_generated/dataModel'
+import { api } from '@/convex/_generated/api'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { cn } from '@/lib/utils'
 
 interface SupplierItemProps {
-  _id: string
+  _id: Id<'suppliers'>
   i: number
   name: string
   phone: string
@@ -28,6 +31,7 @@ const SupplierItem = ({
   const nameInputRef = useRef<HTMLInputElement>(null)
   const phoneInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
+  const updateSupplier = useMutation(api.documents.updateSupplier)
 
   useEffect(() => {
     if (activeId !== _id) {
@@ -51,7 +55,15 @@ const SupplierItem = ({
         variant: 'destructive',
       })
     }
-    alert('Edit: ' + nameValue + ' ' + phoneValue)
+    try {
+      updateSupplier({ id: _id, name: nameValue, phone: phoneValue })
+    } catch (error) {
+      toast({
+        title: 'Xatolik',
+        description: "Ta'minotchi o'zgartirishda xatolik yuz berdi",
+        variant: 'destructive',
+      })
+    }
   }
 
   return (
