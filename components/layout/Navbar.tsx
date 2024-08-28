@@ -25,7 +25,7 @@ const Navbar = () => {
       : ''
 
   return (
-    <nav className='bg-accent h-10 fixed top-0 w-full flex flex-row gap-2 items-center'>
+    <nav className='bg-accent h-10 fixed top-0 w-full flex flex-row gap-2 items-center border-b'>
       <Link href='/'>
         <Image src='/icons/icon.svg' width={46} height={46} alt='Logo' />
       </Link>

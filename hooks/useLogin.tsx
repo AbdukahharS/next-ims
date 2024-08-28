@@ -25,13 +25,6 @@ const useLogin = () => {
     setLoading(true)
     let error
 
-    console.log(
-      username,
-      process.env.NEXT_PUBLIC_USERNAME,
-      password,
-      process.env.NEXT_PUBLIC_PASSWORD
-    )
-
     if (
       username === process.env.NEXT_PUBLIC_USERNAME &&
       password === process.env.NEXT_PUBLIC_PASSWORD

@@ -31,7 +31,7 @@ export default function Home() {
   }
 
   return (
-    <main className='flex min-h-screen flex-col items-center justify-center items-center gap-4'>
+    <main className='flex min-h-screen flex-col justify-center items-center gap-4'>
       <Image src='/icons/icon.svg' width={256} height={256} alt='Logo' />
       <Button
         asChild
