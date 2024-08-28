@@ -12,14 +12,12 @@ const page = () => {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const handleClick = (_id: string) => {
-    console.log(_id)
-
     setActiveId(_id)
   }
 
   return (
     <ResizablePanelGroup direction='horizontal'>
-      <ResizablePanel minSize={20}>
+      <ResizablePanel minSize={30}>
         <div className='w-full h-full overflow-x-auto'>
           {Array.from({ length: 10 }).map((_, i) => (
             <SupplierItem

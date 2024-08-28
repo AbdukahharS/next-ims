@@ -1,8 +1,10 @@
 'use client'
 
-import { Pencil } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Check, Pencil } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
 import { cn } from '@/lib/utils'
 
 interface SupplierItemProps {
@@ -22,6 +24,36 @@ const SupplierItem = ({
   activeId,
   handleClick,
 }: SupplierItemProps) => {
+  const [editing, setEditing] = useState(false)
+  const nameInputRef = useRef<HTMLInputElement>(null)
+  const phoneInputRef = useRef<HTMLInputElement>(null)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    if (activeId !== _id) {
+      setEditing(false)
+    }
+  }, [activeId, _id])
+
+  const handleEdit = () => {
+    setEditing(!editing)
+  }
+
+  const handleEditSubmit = () => {
+    if (!nameInputRef.current || !phoneInputRef.current) return
+    setEditing(false)
+    const nameValue = nameInputRef.current.value
+    const phoneValue = phoneInputRef.current.value
+    if (nameValue === '') {
+      toast({
+        title: 'Xatolik',
+        description: "Ta'minotchi ismini kiriting",
+        variant: 'destructive',
+      })
+    }
+    alert('Edit: ' + nameValue + ' ' + phoneValue)
+  }
+
   return (
     <div
       className={cn(
@@ -34,13 +66,37 @@ const SupplierItem = ({
     >
       <div className='flex items-center gap-3'>
         <div className='border-r w-10 px-1'>{i + 1}</div>
-        <div className='text-lg truncate max-w-full'>{name}</div>
+        {editing ? (
+          <input
+            className='w-full border-none bg-transparent px-2'
+            type='text'
+            defaultValue={name}
+            ref={nameInputRef}
+          />
+        ) : (
+          <div className='w-full truncate'>{name}</div>
+        )}
       </div>
       <div className='flex items-center gap-2'>
-        <div className='text-foreground/60 truncate'>{phone}</div>
-        <Button variant='ghost' size='sm'>
-          <Pencil className='h-4 w-4' />
-        </Button>
+        {editing ? (
+          <input
+            className='w-full border-none bg-transparent px-2'
+            type='text'
+            defaultValue={phone}
+            ref={phoneInputRef}
+          />
+        ) : (
+          <div className='text-foreground/60 truncate'>{phone}</div>
+        )}
+        {editing ? (
+          <Button variant='ghost' size='sm' onClick={handleEditSubmit}>
+            <Check className='h-4 w-4' />
+          </Button>
+        ) : (
+          <Button variant='ghost' size='sm' onClick={handleEdit}>
+            <Pencil className='h-4 w-4' />
+          </Button>
+        )}
       </div>
     </div>
   )
