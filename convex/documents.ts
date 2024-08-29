@@ -7,7 +7,7 @@ export const getSuppliers = query({
     const suppliers = await ctx.db
       .query('suppliers')
       .withIndex('by_name')
-      .order('desc')
+      .order('asc')
       .collect()
 
     return suppliers
@@ -30,6 +30,21 @@ export const updateSupplier = mutation({
     }
 
     const document = await ctx.db.patch(id, { ...rest })
+
+    return document
+  },
+})
+
+export const createSupplier = mutation({
+  args: {
+    name: v.string(),
+    phone: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.insert('suppliers', {
+      name: args.name,
+      phone: args.phone || '',
+    })
 
     return document
   },

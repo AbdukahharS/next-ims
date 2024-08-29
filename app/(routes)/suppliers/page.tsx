@@ -10,6 +10,7 @@ import {
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
 import SupplierItem from './_components/SupplierItem'
+import AddSupplier from './_components/AddSupplier'
 
 const page = () => {
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -23,18 +24,21 @@ const page = () => {
   return (
     <ResizablePanelGroup direction='horizontal'>
       <ResizablePanel minSize={30}>
-        <div className='w-full h-full overflow-x-auto'>
-          {suppliers?.map(({ _id, name, phone }, i) => (
-            <SupplierItem
-              key={i}
-              i={i}
-              name={name}
-              phone={phone}
-              _id={_id}
-              activeId={activeId}
-              handleClick={handleClick}
-            />
-          ))}
+        <div className='w-full h-full overflow-x-auto flex flex-col'>
+          <div className='w-full flex-1'>
+            {suppliers?.map(({ _id, name, phone }, i) => (
+              <SupplierItem
+                key={i}
+                i={i}
+                name={name}
+                phone={phone}
+                _id={_id}
+                activeId={activeId}
+                handleClick={handleClick}
+              />
+            ))}
+          </div>
+          <AddSupplier />
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
