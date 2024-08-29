@@ -30,7 +30,7 @@ const AddSupplier = () => {
   }
 
   return (
-    <div className='w-full flex flex-row p-2 border-t gap-2'>
+    <div className='w-full flex flex-row p-2 border-t-2 gap-2'>
       <Input
         placeholder="Ta'minotchi ismi"
         value={name}
