@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useQuery } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 
+import { Id, Doc } from '@/convex/_generated/dataModel'
 import { api } from '@/convex/_generated/api'
 import {
   ResizableHandle,
@@ -12,10 +13,15 @@ import {
 import SupplierItem from './_components/SupplierItem'
 import AddSupplier from './_components/AddSupplier'
 import SearchSupplier from './_components/SearchSupplier'
+import SupplierProduct from './_components/SupplierProduct'
+import AddProduct from './_components/AddProduct'
+import { cn } from '@/lib/utils'
 
 const page = () => {
-  const [activeId, setActiveId] = useState<string | null>(null)
   const docs = useQuery(api.documents.getSuppliers)
+  const getProducts = useMutation(api.documents.getSupplierProducts)
+  const [activeId, setActiveId] = useState<Id<'suppliers'> | null>(null)
+  const [activeProducts, setActiveProducts] = useState<Doc<'products'>[]>([])
   const [suppliers, setSuppliers] = useState(docs)
   const [search, setSearch] = useState('')
 
@@ -31,7 +37,17 @@ const page = () => {
     }
   }, [docs, search])
 
-  const handleClick = (_id: string) => {
+  useEffect(() => {
+    if (activeId) {
+      getProducts({ supplierId: activeId }).then((docs) => {
+        if (docs.length) {
+          setActiveProducts(docs)
+        }
+      })
+    }
+  }, [activeId])
+
+  const handleClick = (_id: Id<'suppliers'>) => {
     setActiveId(_id)
   }
 
@@ -60,7 +76,29 @@ const page = () => {
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel minSize={30}>Two</ResizablePanel>
+      <ResizablePanel minSize={30}>
+        <div
+          className={cn(
+            'w-full h-full flex flex-col',
+            !activeId && 'justify-center'
+          )}
+        >
+          {!activeId ? (
+            <p className='text-center text-xl'>Ta'minotchi tanlang!</p>
+          ) : activeProducts?.length ? (
+            <div className='w-full flex-1 overflow-y-auto'>
+              {activeProducts.map((doc) => (
+                <SupplierProduct key={doc._id} />
+              ))}
+            </div>
+          ) : (
+            <p className='text-center text-xl flex-1 mt-8'>
+              Bu ta'minotchi uchun mahsulotlar topilmadi
+            </p>
+          )}
+          {activeId && <AddProduct />}
+        </div>
+      </ResizablePanel>
     </ResizablePanelGroup>
   )
 }

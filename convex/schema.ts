@@ -17,5 +17,13 @@ export default defineSchema({
       v.literal('kg'),
       v.literal('m2')
     ),
-  }).index('by_name', ['name']),
+    fraction: v.optional(
+      v.object({
+        unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
+        wholeAmount: v.number(),
+      })
+    ),
+  })
+    .index('by_name', ['name'])
+    .index('by_supplier', ['supplier']),
 })

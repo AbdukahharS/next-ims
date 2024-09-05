@@ -16,7 +16,7 @@ interface SupplierItemProps {
   name: string
   phone: string
   activeId: string | null
-  handleClick: (_id: string) => void
+  handleClick: (_id: Id<'suppliers'>) => void
 }
 
 const SupplierItem = ({

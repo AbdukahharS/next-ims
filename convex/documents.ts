@@ -49,3 +49,18 @@ export const createSupplier = mutation({
     return document
   },
 })
+
+export const getSupplierProducts = mutation({
+  args: {
+    supplierId: v.id('suppliers'),
+  },
+  handler: async (ctx, args) => {
+    const products = await ctx.db
+      .query('products')
+      .withIndex('by_supplier', (q) => q.eq('supplier', args.supplierId))
+      .order('asc')
+      .collect()
+
+    return products
+  },
+})
