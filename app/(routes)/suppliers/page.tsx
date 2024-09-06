@@ -13,15 +13,13 @@ import {
 import SupplierItem from './_components/SupplierItem'
 import AddSupplier from './_components/AddSupplier'
 import SearchSupplier from './_components/SearchSupplier'
-import SupplierProduct from './_components/SupplierProduct'
 import AddProduct from './_components/AddProduct'
 import { cn } from '@/lib/utils'
+import ProductsList from './_components/ProductsList'
 
 const page = () => {
   const docs = useQuery(api.documents.getSuppliers)
-  const getProducts = useMutation(api.documents.getSupplierProducts)
   const [activeId, setActiveId] = useState<Id<'suppliers'> | null>(null)
-  const [activeProducts, setActiveProducts] = useState<Doc<'products'>[]>([])
   const [suppliers, setSuppliers] = useState(docs)
   const [search, setSearch] = useState('')
 
@@ -36,16 +34,6 @@ const page = () => {
       )
     }
   }, [docs, search])
-
-  useEffect(() => {
-    if (activeId) {
-      getProducts({ supplierId: activeId }).then((docs) => {
-        if (docs.length) {
-          setActiveProducts(docs)
-        }
-      })
-    }
-  }, [activeId])
 
   const handleClick = (_id: Id<'suppliers'>) => {
     setActiveId(_id)
@@ -85,18 +73,10 @@ const page = () => {
         >
           {!activeId ? (
             <p className='text-center text-xl'>Ta'minotchi tanlang!</p>
-          ) : activeProducts?.length ? (
-            <div className='w-full flex-1 overflow-y-auto'>
-              {activeProducts.map((doc) => (
-                <SupplierProduct key={doc._id} />
-              ))}
-            </div>
           ) : (
-            <p className='text-center text-xl flex-1 mt-8'>
-              Bu ta'minotchi uchun mahsulotlar topilmadi
-            </p>
+            <ProductsList activeId={activeId} />
           )}
-          {activeId && <AddProduct />}
+          {activeId && <AddProduct activeId={activeId} />}
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>

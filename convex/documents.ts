@@ -50,7 +50,7 @@ export const createSupplier = mutation({
   },
 })
 
-export const getSupplierProducts = mutation({
+export const getSupplierProducts = query({
   args: {
     supplierId: v.id('suppliers'),
   },
@@ -62,5 +62,38 @@ export const getSupplierProducts = mutation({
       .collect()
 
     return products
+  },
+})
+
+export const createSupplierProduct = mutation({
+  args: {
+    supplierId: v.id('suppliers'),
+    name: v.string(),
+    buyPrice: v.number(),
+    sellPrice: v.number(),
+    unit: v.union(
+      v.literal('piece'),
+      v.literal('m'),
+      v.literal('kg'),
+      v.literal('m2')
+    ),
+    fraction: v.optional(
+      v.object({
+        unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
+        wholeAmount: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.insert('products', {
+      name: args.name,
+      supplier: args.supplierId,
+      buyPrice: args.buyPrice,
+      sellPrice: args.sellPrice,
+      unit: args.unit,
+      fraction: args.fraction,
+    })
+
+    return document
   },
 })

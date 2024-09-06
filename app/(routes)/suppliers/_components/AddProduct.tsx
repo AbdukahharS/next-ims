@@ -16,30 +16,68 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
+import { Id } from '@/convex/_generated/dataModel'
 
-const AddProduct = () => {
+const AddProduct = ({ activeId }: { activeId: Id<'suppliers'> }) => {
   const [name, setName] = useState('')
-  const [buyPrice, setBuyPrice] = useState<number | undefined>(undefined)
-  const [sellPrice, setSellPrice] = useState<number | undefined>(undefined)
-  const [unit, setUnit] = useState('piece')
+  const [buyPrice, setBuyPrice] = useState(0)
+  const [sellPrice, setSellPrice] = useState(0)
+  const [unit, setUnit] = useState<'piece' | 'm' | 'kg' | 'm2'>('piece')
   const [enableFrac, setEnableFrac] = useState(false)
-  const [fracUnit, setFracUnit] = useState('m')
+  const [fracUnit, setFracUnit] = useState<'m' | 'kg' | 'm2'>('m')
   const [fracWholeAmount, setFracWholeAmount] = useState(0)
-  const createSupplier = useMutation(api.documents.createSupplier)
+
+  const createProduct = useMutation(api.documents.createSupplierProduct)
   const { toast } = useToast()
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!name) {
       toast({
-        title: "Iltimos, ta'minotchi ismini kiriting",
+        title: 'Iltimos, mahsulot nomini kiriting',
         variant: 'destructive',
       })
       return
     }
 
-    // createSupplier({ name, phone })
+    if (!buyPrice) {
+      toast({
+        title: 'Iltimos, sotib olish narxini kiriting',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (!sellPrice) {
+      toast({
+        title: 'Iltimos, sotish narxini kiriting',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    const fraction = enableFrac
+      ? {
+          unit: fracUnit,
+          wholeAmount: fracWholeAmount,
+        }
+      : undefined
+
+    await createProduct({
+      name,
+      supplierId: activeId,
+      buyPrice,
+      sellPrice,
+      unit,
+      fraction,
+    })
 
     setName('')
+    setBuyPrice(0)
+    setSellPrice(0)
+    setUnit('piece')
+    setEnableFrac(false)
+    setFracUnit('m')
+    setFracWholeAmount(0)
   }
 
   return (
@@ -73,7 +111,10 @@ const AddProduct = () => {
         </div>
         <div className='grid w-full items-center gap-1.5'>
           <Label>O'lchov birligi</Label>
-          <Select value={unit} onValueChange={setUnit}>
+          <Select
+            value={unit}
+            onValueChange={(v) => setUnit(v as 'piece' | 'm' | 'kg' | 'm2')}
+          >
             <SelectTrigger>
               <SelectValue placeholder="O'lchov birligi" />
             </SelectTrigger>
@@ -106,7 +147,7 @@ const AddProduct = () => {
           <Label>Bo'lak birligi</Label>
           <Select
             value={fracUnit}
-            onValueChange={setFracUnit}
+            onValueChange={(v) => setFracUnit(v as 'm' | 'kg' | 'm2')}
             disabled={!enableFrac || unit !== 'piece'}
           >
             <SelectTrigger>
