@@ -31,10 +31,18 @@ const Navbar = () => {
       </Link>
       <Separator className='h-6 w-px bg-accent-foreground' />
 
-      <Button asChild variant='link'>
+      {/* <Button asChild variant='link'>
         <Link href='/warehouse' className={getLinkClasses('/warehouse')}>
           <Warehouse className='mr-2 h-6 w-6' />
           <span className='text-lg'>Ombor</span>
+        </Link>
+      </Button>
+      <Separator className='h-6 w-px bg-accent-foreground' /> */}
+
+      <Button asChild variant='link'>
+        <Link href='/sell' className={getLinkClasses('/sell')}>
+          <ShoppingBag className='mr-2 h-6 w-6' />
+          <span className='text-lg'>Savdo</span>
         </Link>
       </Button>
       <Separator className='h-6 w-px bg-accent-foreground' />
@@ -43,14 +51,6 @@ const Navbar = () => {
         <Link href='/customers' className={getLinkClasses('/customers')}>
           <UsersRound className='mr-2 h-6 w-6' />
           <span className='text-lg'>Mijozlar</span>
-        </Link>
-      </Button>
-      <Separator className='h-6 w-px bg-accent-foreground' />
-
-      <Button asChild variant='link'>
-        <Link href='/sell' className={getLinkClasses('/sell')}>
-          <ShoppingBag className='mr-2 h-6 w-6' />
-          <span className='text-lg'>Savdo</span>
         </Link>
       </Button>
       <Separator className='h-6 w-px bg-accent-foreground' />

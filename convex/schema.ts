@@ -63,4 +63,9 @@ export default defineSchema({
     ),
     sellPrice: v.number(),
   }),
+  customers: defineTable({
+    name: v.string(),
+    phone: v.string(),
+    debt: v.number(),
+  }).index('by_name', ['name']),
 })

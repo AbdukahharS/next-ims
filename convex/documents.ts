@@ -200,3 +200,45 @@ export const addToWarehouse = mutation({
     return document
   },
 })
+
+export const getCustomers = query({
+  handler: async (ctx) => {
+    const customers = await ctx.db
+      .query('customers')
+      .withIndex('by_name')
+      .order('asc')
+      .collect()
+
+    return customers
+  },
+})
+
+export const createCustomer = mutation({
+  args: {
+    name: v.string(),
+    phone: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.insert('customers', {
+      name: args.name,
+      phone: args.phone,
+      debt: 0,
+    })
+
+    return document
+  },
+})
+
+export const updateCustomer = mutation({
+  args: {
+    id: v.id('customers'),
+    name: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    debt: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...rest } = args
+    const document = await ctx.db.patch(id, rest)
+    return document
+  },
+})
