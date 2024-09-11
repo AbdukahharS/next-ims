@@ -17,7 +17,6 @@ interface ProductItemProps {
 
 const ProductItem = ({
   _id,
-  supplier,
   name,
   buyPrice,
   sellPrice,
@@ -25,9 +24,7 @@ const ProductItem = ({
   unit,
   fraction,
 }: ProductItemProps) => {
-  const { addItem, products } = useIntake()
-
-  console.log(products)
+  const { addItem } = useIntake()
 
   const handleClick = () => {
     let amount = Number(
@@ -40,7 +37,7 @@ const ProductItem = ({
       amount = Number(window.prompt('Mahsulot miqdorini to`g`ri kiriting:'))
     }
 
-    addItem(_id, buyPrice, amount)
+    addItem(_id, buyPrice, amount, unit, name, sellPrice, fraction)
   }
   return (
     <tr

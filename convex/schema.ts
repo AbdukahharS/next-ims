@@ -31,9 +31,36 @@ export default defineSchema({
     products: v.array(
       v.object({
         id: v.id('products'),
+        name: v.string(),
+        buyPrice: v.number(),
+        unit: v.union(
+          v.literal('piece'),
+          v.literal('m'),
+          v.literal('kg'),
+          v.literal('m2')
+        ),
         amount: v.number(),
       })
     ),
     totalBuyPrice: v.number(),
+  }),
+  warehouse: defineTable({
+    productId: v.id('products'),
+    name: v.string(),
+    amount: v.number(),
+    unit: v.union(
+      v.literal('piece'),
+      v.literal('m'),
+      v.literal('kg'),
+      v.literal('m2')
+    ),
+    fraction: v.optional(
+      v.object({
+        unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
+        wholeAmount: v.number(),
+        amount: v.number(),
+      })
+    ),
+    sellPrice: v.number(),
   }),
 })

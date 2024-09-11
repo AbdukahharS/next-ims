@@ -144,6 +144,14 @@ export const createIntake = mutation({
     products: v.array(
       v.object({
         id: v.id('products'),
+        name: v.string(),
+        buyPrice: v.number(),
+        unit: v.union(
+          v.literal('piece'),
+          v.literal('m'),
+          v.literal('kg'),
+          v.literal('m2')
+        ),
         amount: v.number(),
       })
     ),
@@ -154,6 +162,39 @@ export const createIntake = mutation({
       supplier: args.supplier,
       products: args.products,
       totalBuyPrice: args.totalBuyPrice,
+    })
+
+    return document
+  },
+})
+export const addToWarehouse = mutation({
+  args: {
+    _id: v.id('products'),
+    amount: v.number(),
+    name: v.string(),
+    unit: v.union(
+      v.literal('piece'),
+      v.literal('m'),
+      v.literal('kg'),
+      v.literal('m2')
+    ),
+    fraction: v.optional(
+      v.object({
+        unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
+        wholeAmount: v.number(),
+        amount: v.number(),
+      })
+    ),
+    sellPrice: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.insert('warehouse', {
+      name: args.name,
+      amount: args.amount,
+      unit: args.unit,
+      fraction: args.fraction,
+      sellPrice: args.sellPrice,
+      productId: args._id,
     })
 
     return document

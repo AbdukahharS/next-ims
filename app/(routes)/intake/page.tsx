@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { useMutation } from 'convex/react'
 
-import { Id } from '@/convex/_generated/dataModel'
+import { api } from '@/convex/_generated/api'
 import {
   ResizableHandle,
   ResizablePanel,
@@ -12,10 +13,54 @@ import SearchBar from './_components/SearchBar'
 import SupplierList from './_components/SupplierList'
 import ProductList from './_components/ProductList'
 import useIntake from '@/hooks/useIntake'
+import IntakeList from './_components/IntakeList'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
 
 const page = () => {
   const [search, setSearch] = useState('')
-  const { supplier } = useIntake()
+  const { supplier, totalBuyPrice, clear, products } = useIntake()
+  const createIntake = useMutation(api.documents.createIntake)
+  const addToWarehoouse = useMutation(api.documents.addToWarehouse)
+  const { toast } = useToast()
+
+  const handleSubmit = () => {
+    if (!supplier) return
+    const approval = window.confirm(
+      'Tanlangan mahsulotlarni omborga kiritishni tasdiqlaysizmi?'
+    )
+    if (!approval) return
+    try {
+      createIntake({
+        supplier,
+        products: products.map((p) => ({
+          amount: p.amount,
+          buyPrice: p.buyPrice,
+          id: p.id,
+          name: p.name,
+          unit: p.unit,
+        })),
+        totalBuyPrice,
+      })
+      products.map((p) => {
+        addToWarehoouse({
+          name: p.name,
+          _id: p.id,
+          sellPrice: p.sellPrice,
+          unit: p.unit,
+          amount: p.amount,
+          fraction: p.fraction ? { ...p.fraction, amount: 0 } : undefined,
+        })
+      })
+      setSearch('')
+      clear()
+    } catch (error) {
+      toast({
+        title: 'Qandaydir xatolik yuz berdi',
+        variant: 'destructive',
+      })
+    }
+  }
 
   return (
     <ResizablePanelGroup direction='horizontal'>
@@ -31,19 +76,18 @@ const page = () => {
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel minSize={30}>
-        {/* <div
-          className={cn(
-            'w-full h-full flex flex-col',
-            !activeId && 'justify-center'
-          )}
-        >
-          {!activeId ? (
-            <p className='text-center text-xl'>Ta'minotchi tanlang!</p>
-          ) : (
-            <ProductsList activeId={activeId} />
-          )}
-          {activeId && <AddProduct activeId={activeId} />}
-        </div> */}
+        <div className='w-full h-full overflow-x-auto flex flex-col'>
+          <IntakeList />
+          <div className='w-full flex justify-between px-4 py-2 border-t items-center'>
+            <span>
+              Umumiy narxi:{' '}
+              {new Intl.NumberFormat('en-US').format(totalBuyPrice)}
+            </span>
+            <Button disabled={!products?.length} onClick={handleSubmit}>
+              Kirimni tasdiqlash
+            </Button>
+          </div>
+        </div>
       </ResizablePanel>
     </ResizablePanelGroup>
   )
