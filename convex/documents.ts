@@ -137,3 +137,25 @@ export const updateSupplierProduct = mutation({
     return document
   },
 })
+
+export const createIntake = mutation({
+  args: {
+    supplier: v.id('suppliers'),
+    products: v.array(
+      v.object({
+        id: v.id('products'),
+        amount: v.number(),
+      })
+    ),
+    totalBuyPrice: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.insert('intakes', {
+      supplier: args.supplier,
+      products: args.products,
+      totalBuyPrice: args.totalBuyPrice,
+    })
+
+    return document
+  },
+})

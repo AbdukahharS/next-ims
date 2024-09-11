@@ -26,4 +26,14 @@ export default defineSchema({
   })
     .index('by_name', ['name'])
     .index('by_supplier', ['supplier']),
+  intakes: defineTable({
+    supplier: v.id('suppliers'),
+    products: v.array(
+      v.object({
+        id: v.id('products'),
+        amount: v.number(),
+      })
+    ),
+    totalBuyPrice: v.number(),
+  }),
 })
