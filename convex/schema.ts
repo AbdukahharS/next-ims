@@ -46,6 +46,7 @@ export default defineSchema({
   }),
   warehouse: defineTable({
     productId: v.id('products'),
+    supplier: v.id('suppliers'),
     name: v.string(),
     amount: v.number(),
     unit: v.union(
@@ -68,4 +69,27 @@ export default defineSchema({
     phone: v.string(),
     debt: v.number(),
   }).index('by_name', ['name']),
+  sales: defineTable({
+    customer: v.id('customers'),
+    products: v.array(
+      v.object({
+        id: v.id('warehouse'),
+        name: v.string(),
+        amount: v.number(),
+        sellPrice: v.number(),
+        fraction: v.optional(
+          v.object({
+            unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
+            wholeAmount: v.number(),
+            amount: v.number(),
+          })
+        ),
+      })
+    ),
+    totalSellPrice: v.number(),
+    payment: v.object({
+      cash: v.number(),
+      card: v.number(),
+    }),
+  }),
 })

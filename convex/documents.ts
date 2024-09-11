@@ -170,6 +170,7 @@ export const createIntake = mutation({
 export const addToWarehouse = mutation({
   args: {
     _id: v.id('products'),
+    supplier: v.id('suppliers'),
     amount: v.number(),
     name: v.string(),
     unit: v.union(
@@ -191,6 +192,7 @@ export const addToWarehouse = mutation({
     const document = await ctx.db.insert('warehouse', {
       name: args.name,
       amount: args.amount,
+      supplier: args.supplier,
       unit: args.unit,
       fraction: args.fraction,
       sellPrice: args.sellPrice,
@@ -242,3 +244,74 @@ export const updateCustomer = mutation({
     return document
   },
 })
+
+export const getWarehouseWithSupplier = query({
+  args: {
+    supplier: v.id('suppliers'),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db
+      .query('warehouse')
+      .filter((q) => q.eq(q.field('supplier'), args.supplier))
+      .collect()
+    return document
+  },
+})
+
+export const perfornmSale = mutation({
+  args: {
+    customer: v.id('customers'),
+    products: v.array(
+      v.object({
+        id: v.id('warehouse'),
+        name: v.string(),
+        amount: v.number(),
+        sellPrice: v.number(),
+        fraction: v.optional(
+          v.object({
+            unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
+            wholeAmount: v.number(),
+            amount: v.number(),
+          })
+        ),
+      })
+    ),
+    totalSellPrice: v.number(),
+    payment: v.object({
+      cash: v.number(),
+      card: v.number(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.insert('sales', {
+      customer: args.customer,
+      products: args.products,
+      totalSellPrice: args.totalSellPrice,
+      payment: args.payment,
+    })
+
+    return document
+  },
+})
+
+// export const subtrackFromWarehouse = mutation({
+//   args: {
+//     id: v.id('warehouse'),
+//     amount: v.number(),
+//     fraction: v.optional(
+//       v.object({
+//         unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
+//         wholeAmount: v.number(),
+//         amount: v.number(),
+//       })
+//     ),
+//   },
+//   handler: async (ctx, args) => {
+//     const document = await ctx.db
+//       .query('warehouse')
+//       .filter((q) => q.eq(q.field('_id'), args.id))
+//       .update((q) => q.patch({ amount: q.field('amount') - args.amount }))
+//       .collect()
+//     return document
+//   },
+// })

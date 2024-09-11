@@ -50,6 +50,7 @@ const page = () => {
           unit: p.unit,
           amount: p.amount,
           fraction: p.fraction ? { ...p.fraction, amount: 0 } : undefined,
+          supplier: supplier,
         })
       })
       setSearch('')

@@ -40,7 +40,7 @@ const Navbar = () => {
       <Separator className='h-6 w-px bg-accent-foreground' /> */}
 
       <Button asChild variant='link'>
-        <Link href='/sell' className={getLinkClasses('/sell')}>
+        <Link href='/sale' className={getLinkClasses('/sale')}>
           <ShoppingBag className='mr-2 h-6 w-6' />
           <span className='text-lg'>Savdo</span>
         </Link>
