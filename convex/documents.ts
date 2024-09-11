@@ -67,7 +67,7 @@ export const getSupplierProducts = query({
 
 export const createSupplierProduct = mutation({
   args: {
-    supplierId: v.id('suppliers'),
+    supplier: v.id('suppliers'),
     name: v.string(),
     buyPrice: v.number(),
     sellPrice: v.number(),
@@ -87,11 +87,51 @@ export const createSupplierProduct = mutation({
   handler: async (ctx, args) => {
     const document = await ctx.db.insert('products', {
       name: args.name,
-      supplier: args.supplierId,
+      supplier: args.supplier,
       buyPrice: args.buyPrice,
       sellPrice: args.sellPrice,
       unit: args.unit,
       fraction: args.fraction,
+    })
+
+    return document
+  },
+})
+
+export const updateSupplierProduct = mutation({
+  args: {
+    id: v.id('products'),
+    supplier: v.id('suppliers'),
+    name: v.optional(v.string()),
+    buyPrice: v.optional(v.number()),
+    sellPrice: v.optional(v.number()),
+    unit: v.optional(
+      v.union(
+        v.literal('piece'),
+        v.literal('m'),
+        v.literal('kg'),
+        v.literal('m2')
+      )
+    ),
+    fraction: v.optional(
+      v.object({
+        unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
+        wholeAmount: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...rest } = args
+
+    const existingDocument = await ctx.db.get(id)
+
+    if (!existingDocument) {
+      throw new Error("Bunday ta'minotchi topilmadi")
+    }
+
+    const document = await ctx.db.patch(id, {
+      ...rest,
+      fraction: rest.fraction ? rest.fraction : existingDocument.fraction,
     })
 
     return document

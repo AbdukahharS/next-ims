@@ -64,7 +64,7 @@ const AddProduct = ({ activeId }: { activeId: Id<'suppliers'> }) => {
 
     await createProduct({
       name,
-      supplierId: activeId,
+      supplier: activeId,
       buyPrice,
       sellPrice,
       unit,

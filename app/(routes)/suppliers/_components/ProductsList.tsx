@@ -2,7 +2,7 @@ import { useQuery } from 'convex/react'
 
 import SupplierProduct from './SupplierProduct'
 import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
+import { Id, Doc } from '@/convex/_generated/dataModel'
 
 const ProductsList = ({ activeId }: { activeId: Id<'suppliers'> }) => {
   if (!activeId) return null
@@ -10,16 +10,32 @@ const ProductsList = ({ activeId }: { activeId: Id<'suppliers'> }) => {
     supplierId: activeId,
   })
 
-  return products?.length ? (
-    <div className='w-full flex-1 overflow-y-auto'>
-      {products.map((doc) => (
-        <SupplierProduct key={doc._id} />
-      ))}
+  return (
+    <div className='flex-1'>
+      {products?.length ? (
+        <table className='w-full overflow-y-auto table-auto'>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Mahsulot nomi</th>
+              <th>Sotib olish narxi</th>
+              <th>Sotish narxi</th>
+              <th>Birligi</th>
+              <th>Bo'lak</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((doc, i) => (
+              <SupplierProduct key={doc._id} {...doc} i={i} />
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className='text-center text-xl flex-1 mt-8'>
+          Bu ta'minotchi uchun mahsulotlar topilmadi
+        </p>
+      )}
     </div>
-  ) : (
-    <p className='text-center text-xl flex-1 mt-8'>
-      Bu ta'minotchi uchun mahsulotlar topilmadi
-    </p>
   )
 }
 

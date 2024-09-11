@@ -67,3 +67,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+table, th, td {
+  border: 1px solid hsl(var(--border));
+  border-collapse: collapse;
+}
