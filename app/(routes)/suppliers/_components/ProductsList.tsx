@@ -21,7 +21,6 @@ const ProductsList = ({ activeId }: { activeId: Id<'suppliers'> }) => {
               <th>Sotib olish narxi</th>
               <th>Sotish narxi</th>
               <th>Birligi</th>
-              <th>Bo'lak</th>
             </tr>
           </thead>
           <tbody>

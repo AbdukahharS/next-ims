@@ -21,7 +21,7 @@ const SelectCustomer = () => {
     <div className='w-full border-b relative'>
       <Select onValueChange={(v) => setCustomer(v as Id<'customers'>)}>
         <SelectTrigger className='w-full'>
-          <SelectValue placeholder='Taminotchini tanlang' />
+          <SelectValue placeholder='Mijozni tanlang' />
         </SelectTrigger>
         <SelectContent>
           {customers?.map((customer) => (

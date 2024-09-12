@@ -77,12 +77,6 @@ export const createSupplierProduct = mutation({
       v.literal('kg'),
       v.literal('m2')
     ),
-    fraction: v.optional(
-      v.object({
-        unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
-        wholeAmount: v.number(),
-      })
-    ),
   },
   handler: async (ctx, args) => {
     const document = await ctx.db.insert('products', {
@@ -91,7 +85,6 @@ export const createSupplierProduct = mutation({
       buyPrice: args.buyPrice,
       sellPrice: args.sellPrice,
       unit: args.unit,
-      fraction: args.fraction,
     })
 
     return document
@@ -113,12 +106,6 @@ export const updateSupplierProduct = mutation({
         v.literal('m2')
       )
     ),
-    fraction: v.optional(
-      v.object({
-        unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
-        wholeAmount: v.number(),
-      })
-    ),
   },
   handler: async (ctx, args) => {
     const { id, ...rest } = args
@@ -131,7 +118,6 @@ export const updateSupplierProduct = mutation({
 
     const document = await ctx.db.patch(id, {
       ...rest,
-      fraction: rest.fraction ? rest.fraction : existingDocument.fraction,
     })
 
     return document
@@ -179,13 +165,6 @@ export const addToWarehouse = mutation({
       v.literal('kg'),
       v.literal('m2')
     ),
-    fraction: v.optional(
-      v.object({
-        unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
-        wholeAmount: v.number(),
-        amount: v.number(),
-      })
-    ),
     sellPrice: v.number(),
   },
   handler: async (ctx, args) => {
@@ -194,7 +173,6 @@ export const addToWarehouse = mutation({
       amount: args.amount,
       supplier: args.supplier,
       unit: args.unit,
-      fraction: args.fraction,
       sellPrice: args.sellPrice,
       productId: args._id,
     })
@@ -227,6 +205,16 @@ export const createCustomer = mutation({
       debt: 0,
     })
 
+    return document
+  },
+})
+
+export const getCustomer = query({
+  args: {
+    id: v.id('customers'),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.get(args.id)
     return document
   },
 })
@@ -267,12 +255,11 @@ export const perfornmSale = mutation({
         name: v.string(),
         amount: v.number(),
         sellPrice: v.number(),
-        fraction: v.optional(
-          v.object({
-            unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
-            wholeAmount: v.number(),
-            amount: v.number(),
-          })
+        unit: v.union(
+          v.literal('piece'),
+          v.literal('m'),
+          v.literal('kg'),
+          v.literal('m2')
         ),
       })
     ),
@@ -283,6 +270,10 @@ export const perfornmSale = mutation({
     }),
   },
   handler: async (ctx, args) => {
+    const cust = await ctx.db.get(args.customer)
+    if (!cust) {
+      throw new Error('Bunday mijoz topilmadi')
+    }
     const document = await ctx.db.insert('sales', {
       customer: args.customer,
       products: args.products,
@@ -290,28 +281,36 @@ export const perfornmSale = mutation({
       payment: args.payment,
     })
 
+    await ctx.db.patch(args.customer, {
+      debt:
+        cust.debt + args.totalSellPrice - args.payment.cash - args.payment.card,
+    })
+
     return document
   },
 })
 
-// export const subtrackFromWarehouse = mutation({
-//   args: {
-//     id: v.id('warehouse'),
-//     amount: v.number(),
-//     fraction: v.optional(
-//       v.object({
-//         unit: v.union(v.literal('m'), v.literal('kg'), v.literal('m2')),
-//         wholeAmount: v.number(),
-//         amount: v.number(),
-//       })
-//     ),
-//   },
-//   handler: async (ctx, args) => {
-//     const document = await ctx.db
-//       .query('warehouse')
-//       .filter((q) => q.eq(q.field('_id'), args.id))
-//       .update((q) => q.patch({ amount: q.field('amount') - args.amount }))
-//       .collect()
-//     return document
-//   },
-// })
+export const subtrackFromWarehouse = mutation({
+  args: {
+    id: v.id('warehouse'),
+    amount: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const { id, amount } = args
+
+    const existingDocument = await ctx.db.get(id)
+
+    if (!existingDocument) {
+      throw new Error('Bunday mahsulot omborda topilmadi')
+    }
+
+    if (existingDocument.amount <= amount) {
+      await ctx.db.delete(id)
+    } else {
+      await ctx.db.patch(id, {
+        amount: existingDocument.amount - amount,
+      })
+    }
+  },
+})
+

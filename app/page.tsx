@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <main className='flex min-h-screen flex-col justify-center items-center gap-4'>
       <Image src='/icons/icon.svg' width={256} height={256} alt='Logo' />
-      <Button
+      {/* <Button
         asChild
         variant='outline'
         className='w-full max-w-sm p-8 justify-start '
@@ -42,7 +42,7 @@ export default function Home() {
           <Warehouse className='mr-4' size={42} />
           <span className='text-3xl'>Ombor</span>
         </Link>
-      </Button>
+      </Button> */}
       <Button
         asChild
         variant='outline'
@@ -58,7 +58,7 @@ export default function Home() {
         variant='outline'
         className='w-full max-w-sm p-8 justify-start '
       >
-        <Link href='/sell'>
+        <Link href='/sale'>
           <ShoppingBag className='mr-4' size={42} />
           <span className='text-3xl'>Savdo</span>
         </Link>

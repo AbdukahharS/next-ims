@@ -9,11 +9,6 @@ type SaleStore = {
     name: string
     amount: number
     sellPrice: number
-    fraction?: {
-      unit: 'm' | 'kg' | 'm2'
-      wholeAmount: number
-      amount: number
-    }
     unit: 'piece' | 'm' | 'kg' | 'm2'
   }[] // Make products an array that can be empty
   totalSellPrice: number
@@ -26,19 +21,10 @@ type SaleStore = {
     amount: number,
     unit: 'piece' | 'm' | 'kg' | 'm2',
     name: string,
-    sellPrice: number,
-    fraction?: {
-      unit: 'm' | 'kg' | 'm2'
-      wholeAmount: number
-      amount: number
-    }
+    sellPrice: number
   ) => void
   setCustomer: (id: Id<'customers'>) => void
-  changeAmount: (
-    id: Id<'warehouse'>,
-    amount: number,
-    fractionAmount?: number
-  ) => void
+  changeAmount: (id: Id<'warehouse'>, amount: number) => void
   clear: () => void
   paymentChange: (cash?: number, card?: number) => void
 }
@@ -48,33 +34,42 @@ const useSale = create<SaleStore>((set, get) => ({
   products: [],
   totalSellPrice: 0,
   payment: { cash: 0, card: 0 },
-  addItem: (id, amount, unit, name, sellPrice, fraction) => {
-    set((prev) => ({
-      ...prev,
-      totalSellPrice: prev.totalSellPrice + sellPrice * amount,
-      products: [
-        ...prev.products,
-        {
-          id,
-          amount,
-          unit,
-          name,
-          sellPrice,
-          fraction: fraction
-            ? {
-                unit: fraction.unit,
-                wholeAmount: fraction.wholeAmount,
-                amount: fraction.amount || 0,
-              }
-            : undefined,
-        },
-      ],
-    }))
+  addItem: (id, amount, unit, name, sellPrice) => {
+    const doesExist = get().products.some((p) => p.id === id)
+    if (!doesExist) {
+      set((prev) => ({
+        ...prev,
+        totalSellPrice: prev.totalSellPrice + sellPrice * amount,
+        products: [
+          ...prev.products,
+          {
+            id,
+            amount,
+            unit,
+            name,
+            sellPrice,
+          },
+        ],
+      }))
+    } else {
+      set((prev) => ({
+        ...prev,
+        products: prev.products.map((p) => {
+          if (p.id === id) {
+            return {
+              ...p,
+              amount: p.amount + amount,
+            }
+          }
+          return p
+        }),
+      }))
+    }
   },
   setCustomer: (id) => {
     set({ customer: id })
   },
-  changeAmount: (id, amount, fractionAmount) => {
+  changeAmount: (id, amount) => {
     set((prev) => ({
       ...prev,
       products: prev.products.map((p) => {
@@ -82,9 +77,6 @@ const useSale = create<SaleStore>((set, get) => ({
           return {
             ...p,
             amount,
-            fraction: p.fraction
-              ? { ...p.fraction, amount: fractionAmount || 0 }
-              : undefined,
           }
         }
         return p

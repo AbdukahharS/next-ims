@@ -9,10 +9,6 @@ interface ProductItemProps {
   sellPrice: number
   i: number
   unit: 'piece' | 'm' | 'kg' | 'm2'
-  fraction?: {
-    unit: 'm' | 'kg' | 'm2'
-    wholeAmount: number
-  }
 }
 
 const ProductItem = ({
@@ -22,7 +18,6 @@ const ProductItem = ({
   sellPrice,
   i,
   unit,
-  fraction,
 }: ProductItemProps) => {
   const { addItem } = useIntake()
 
@@ -37,7 +32,7 @@ const ProductItem = ({
       amount = Number(window.prompt('Mahsulot miqdorini to`g`ri kiriting:'))
     }
 
-    addItem(_id, buyPrice, amount, unit, name, sellPrice, fraction)
+    addItem(_id, buyPrice, amount, unit, name, sellPrice)
   }
   return (
     <tr
@@ -57,11 +52,6 @@ const ProductItem = ({
       <td className='px-2'>
         <div className='text-foreground/60 truncate'>
           {unit === 'piece' ? 'dona' : unit}
-        </div>
-      </td>
-      <td className='px-2'>
-        <div className='text-foreground/60 truncate'>
-          {fraction?.wholeAmount} {fraction?.unit}
         </div>
       </td>
     </tr>

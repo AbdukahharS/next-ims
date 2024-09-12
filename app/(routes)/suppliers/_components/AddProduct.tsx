@@ -55,20 +55,12 @@ const AddProduct = ({ activeId }: { activeId: Id<'suppliers'> }) => {
       return
     }
 
-    const fraction = enableFrac
-      ? {
-          unit: fracUnit,
-          wholeAmount: fracWholeAmount,
-        }
-      : undefined
-
     await createProduct({
       name,
       supplier: activeId,
       buyPrice,
       sellPrice,
       unit,
-      fraction,
     })
 
     setName('')
@@ -130,49 +122,6 @@ const AddProduct = ({ activeId }: { activeId: Id<'suppliers'> }) => {
         </div>
 
         <Button onClick={handleClick}>Yangi mahsulot qo'shish</Button>
-      </div>
-      <div className='flex flex-row gap-2 mt-3 items-center'>
-        <div className='w-full'>
-          <Checkbox
-            id='enableFraction'
-            disabled={unit !== 'piece'}
-            checked={enableFrac}
-            onCheckedChange={(v: boolean) => setEnableFrac(v)}
-          />
-          <Label htmlFor='enableFraction' className='ml-2'>
-            Bo'lib sotish
-          </Label>
-        </div>
-        <div className='grid w-full items-center gap-1.5'>
-          <Label>Bo'lak birligi</Label>
-          <Select
-            value={fracUnit}
-            onValueChange={(v) => setFracUnit(v as 'm' | 'kg' | 'm2')}
-            disabled={!enableFrac || unit !== 'piece'}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Bo'lak birligi" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='kg'>kg</SelectItem>
-              <SelectItem value='m'>m</SelectItem>
-              <SelectItem value='m2'>
-                m<sup>2</sup>
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className='grid w-full items-center gap-1.5'>
-          <Label htmlFor='fracWholeAmount'>Qancha bo'lak butun bo'ladi?</Label>
-          <Input
-            disabled={!enableFrac || unit !== 'piece'}
-            id='fracWholeAmount'
-            placeholder="Qancha bo'lak butun bo'ladi?"
-            type='number'
-            onChange={(e) => setFracWholeAmount(Number(e.target.value))}
-            value={fracWholeAmount}
-          />
-        </div>
       </div>
     </div>
   )

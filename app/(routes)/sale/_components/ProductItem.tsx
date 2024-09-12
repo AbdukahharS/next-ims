@@ -1,5 +1,7 @@
 import { Id } from '@/convex/_generated/dataModel'
 import useSale from '@/hooks/useSale'
+import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
 
 interface ProductItemProps {
   _id: Id<'warehouse'>
@@ -9,11 +11,6 @@ interface ProductItemProps {
   sellPrice: number
   i: number
   unit: 'piece' | 'm' | 'kg' | 'm2'
-  fraction?: {
-    unit: 'm' | 'kg' | 'm2'
-    wholeAmount: number
-    amount: number
-  }
 }
 
 const ProductItem = ({
@@ -23,9 +20,17 @@ const ProductItem = ({
   sellPrice,
   i,
   unit,
-  fraction,
 }: ProductItemProps) => {
-  const { addItem } = useSale()
+  const { addItem, products } = useSale()
+  const [minus, setMinus] = useState(0)
+
+  useEffect(() => {
+    products.forEach((p) => {
+      if (p.id === _id) {
+        setMinus(p.amount)
+      }
+    })
+  }, [products])
 
   const handleClick = () => {
     let newAmount = Number(
@@ -43,30 +48,15 @@ const ProductItem = ({
         window.prompt('Mahsulot miqdorini ombordagidan oshmasligi kerak:')
       )
     }
-    let fractionAmount = 0
-    if (fraction) {
-      fractionAmount = Number(
-        window.prompt(`Mahsulot bo'lak miqdori (${fraction.unit}):`, '0')
-      )
-      while (Number.isNaN(fractionAmount)) {
-        fractionAmount = Number(
-          window.prompt('Mahsulot miqdorini to`g`ri kiriting:')
-        )
-      }
-    }
 
-    const fractionData = fraction
-      ? {
-          amount: fractionAmount,
-          unit: fraction.unit,
-          wholeAmount: fraction.wholeAmount,
-        }
-      : undefined
-    addItem(_id, newAmount, unit, name, sellPrice, fractionData)
+    addItem(_id, newAmount, unit, name, sellPrice)
   }
   return (
     <tr
-      className='w-full h-8 cursor-pointer hover:bg-primary-foreground'
+      className={cn(
+        'w-full h-8 cursor-pointer hover:bg-primary-foreground',
+        amount === minus && 'hidden'
+      )}
       onClick={handleClick}
     >
       <td className='px-2'>{i + 1}</td>
@@ -78,8 +68,7 @@ const ProductItem = ({
       </td>
       <td className='px-2'>
         <div className='text-foreground/60 truncate'>
-          {amount} {unit === 'piece' ? 'dona' : unit}{' '}
-          {fraction?.amount ? `(${fraction.amount} ${fraction.unit})` : ''}
+          {amount - minus} {unit === 'piece' ? 'dona' : unit}
         </div>
       </td>
     </tr>

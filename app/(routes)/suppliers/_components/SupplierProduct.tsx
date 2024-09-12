@@ -24,10 +24,6 @@ interface SupplierProductProps {
   sellPrice: number
   i: number
   unit: 'piece' | 'm' | 'kg' | 'm2'
-  fraction?: {
-    unit: 'm' | 'kg' | 'm2'
-    wholeAmount: number
-  }
 }
 
 const SupplierProduct = ({
@@ -38,17 +34,13 @@ const SupplierProduct = ({
   sellPrice,
   i,
   unit,
-  fraction,
 }: SupplierProductProps) => {
   const [editing, setEditing] = useState(false)
   const [unitstate, setUnit] = useState<'piece' | 'm' | 'kg' | 'm2'>(unit)
-  const [fractionUnit, setFactoriUnit] = useState<'m' | 'kg' | 'm2'>(
-    fraction?.unit || 'm'
-  )
+
   const nameInputRef = useRef<HTMLInputElement>(null)
   const buyPriceInputRef = useRef<HTMLInputElement>(null)
   const sellPriceInputRef = useRef<HTMLInputElement>(null)
-  const fractionWholeAmountRef = useRef<HTMLInputElement>(null)
 
   const { toast } = useToast()
   const updateSupplierProduct = useMutation(api.documents.updateSupplierProduct)
@@ -76,12 +68,6 @@ const SupplierProduct = ({
       buyPrice: buyPriceValue,
       sellPrice: sellPriceValue,
       unit: unitstate,
-      fraction: fraction
-        ? {
-            unit: fractionUnit,
-            wholeAmount: Number(fractionWholeAmountRef.current?.value),
-          }
-        : undefined,
     }
 
     try {
@@ -140,35 +126,6 @@ const SupplierProduct = ({
         ) : (
           <div className='text-foreground/60 truncate'>
             {unit === 'piece' ? 'dona' : unit}
-          </div>
-        )}
-      </td>
-      <td className='px-2'>
-        {editing && !!fraction ? (
-          <div className='flex gap-1 items-center'>
-            <Input
-              ref={fractionWholeAmountRef}
-              defaultValue={fraction?.wholeAmount}
-            />
-            <Select
-              value={fractionUnit}
-              onValueChange={(v) => setFactoriUnit(v as 'm' | 'kg' | 'm2')}
-            >
-              <SelectTrigger className='w-12 p-1'>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='kg'>kg</SelectItem>
-                <SelectItem value='m'>m</SelectItem>
-                <SelectItem value='m2'>
-                  m<sup>2</sup>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        ) : (
-          <div className='text-foreground/60 truncate'>
-            {fraction && `${fraction.wholeAmount} ${fraction.unit}`}
           </div>
         )}
       </td>

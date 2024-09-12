@@ -13,6 +13,7 @@ const SaleList = () => {
             <th>Mahsulot nomi</th>
             <th>Mahsulot narxi</th>
             <th>Miqdori</th>
+            <th>Umumiy narx</th>
           </tr>
         </thead>
         <tbody>

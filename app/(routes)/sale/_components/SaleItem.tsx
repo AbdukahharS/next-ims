@@ -1,29 +1,16 @@
 import { Id } from '@/convex/_generated/dataModel'
 import useSale from '@/hooks/useSale'
 
-interface IntakeItemProps {
+interface SaleItemProps {
   i: number
   name: string
   id: Id<'warehouse'>
   amount: number
   sellPrice: number
   unit: 'piece' | 'm' | 'kg' | 'm2'
-  fraction?: {
-    unit: 'm' | 'kg' | 'm2'
-    wholeAmount: number
-    amount: number
-  }
 }
 
-const IntakeItem = ({
-  id,
-  name,
-  amount,
-  sellPrice,
-  unit,
-  i,
-  fraction,
-}: IntakeItemProps) => {
+const SaleItem = ({ id, name, amount, sellPrice, unit, i }: SaleItemProps) => {
   const { changeAmount } = useSale()
 
   const handleClick = () => {
@@ -40,22 +27,7 @@ const IntakeItem = ({
       )
     }
 
-    let fractionAmount = 0
-    if (fraction) {
-      fractionAmount = Number(
-        window.prompt(
-          `Mahsulot bo'lak miqdori (${fraction.unit}):`,
-          fractionAmount.toString()
-        )
-      )
-      while (Number.isNaN(fractionAmount)) {
-        fractionAmount = Number(
-          window.prompt('Mahsulot miqdorini to`g`ri kiriting:')
-        )
-      }
-    }
-
-    changeAmount(id, newAmount, fractionAmount)
+    changeAmount(id, newAmount)
   }
 
   return (
@@ -70,14 +42,16 @@ const IntakeItem = ({
       <td className='px-2'>
         <div className='text-foreground/60 truncate'>{sellPrice}</div>
       </td>
-      <td className='px-2'>
+      <td>
         <div className='text-foreground/60 truncate'>
-          {amount} {unit === 'piece' ? 'dona' : unit}{' '}
-          {fraction ? `(${fraction.amount} ${fraction.unit})` : ''}
+          {amount} {unit === 'piece' ? 'dona' : unit}
         </div>
+      </td>
+      <td>
+        <div className='text-foreground/60 truncate'>{sellPrice * amount}</div>
       </td>
     </tr>
   )
 }
 
-export default IntakeItem
+export default SaleItem
