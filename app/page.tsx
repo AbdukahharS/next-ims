@@ -93,7 +93,7 @@ export default function Home() {
           <span className='text-3xl'>Kirim-chiqim tarixi</span>
         </Link>
       </Button>
-      <Button
+      {/* <Button
         asChild
         variant='outline'
         className='w-full max-w-sm p-8 justify-start '
@@ -102,7 +102,7 @@ export default function Home() {
           <ChartNoAxesCombined className='mr-4' size={42} />
           <span className='text-3xl'>Statistika</span>
         </Link>
-      </Button>
+      </Button> */}
     </main>
   )
 }

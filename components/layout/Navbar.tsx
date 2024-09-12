@@ -79,12 +79,12 @@ const Navbar = () => {
       </Button>
       <Separator className='h-6 w-px bg-accent-foreground' />
 
-      <Button asChild variant='link'>
+      {/* <Button asChild variant='link'>
         <Link href='/statistics' className={getLinkClasses('/statistics')}>
           <ChartNoAxesCombined className='mr-2 h-6 w-6' />
           <span className='text-lg'>Statistika</span>
         </Link>
-      </Button>
+      </Button> */}
     </nav>
   )
 }
