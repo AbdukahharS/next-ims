@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-const login = () => {
+const Login = () => {
   const { loading, isAuthenticated, login } = useLogin()
   const router = useRouter()
   const { toast } = useToast()
@@ -78,4 +78,4 @@ const login = () => {
   )
 }
 
-export default login
+export default Login

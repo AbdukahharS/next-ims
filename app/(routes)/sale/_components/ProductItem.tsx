@@ -30,7 +30,7 @@ const ProductItem = ({
         setMinus(p.amount)
       }
     })
-  }, [products])
+  }, [products, _id])
 
   const handleClick = () => {
     let newAmount = Number(

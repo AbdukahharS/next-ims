@@ -228,6 +228,26 @@ export const getSupplier = query({
   },
 })
 
+export const getSale = query({
+  args: {
+    id: v.id('sales'),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.get(args.id)
+    return document
+  },
+})
+
+export const getIntake = query({
+  args: {
+    id: v.id('intakes'),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.get(args.id)
+    return document
+  },
+})
+
 export const updateCustomer = mutation({
   args: {
     id: v.id('customers'),

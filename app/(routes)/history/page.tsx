@@ -11,6 +11,8 @@ import {
 import FilterBar from './_components/FilterBar'
 import SaleList from './_components/SaleList'
 import IntakeList from './_components/IntakeList'
+import SaleDetails from './_components/SaleDetails'
+import IntakeDetails from './_components/IntakeDetails'
 
 function formatDate(date: Date) {
   const day = date.getDate()
@@ -61,12 +63,12 @@ const Page = () => {
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel minSize={30}>
-        <div className='w-full h-full overflow-x-auto flex flex-col'>
-          {/* <div className='w-full flex-1'>
-            {!!active && <EditCustomer customer={active} />}
-          </div>
-          <AddCustomer /> */}
-        </div>
+        {!!active && (
+          <>
+            {type === 'sale' && <SaleDetails active={active} />}
+            {type === 'intake' && <IntakeDetails active={active} />}
+          </>
+        )}
       </ResizablePanel>
     </ResizablePanelGroup>
   )
