@@ -218,6 +218,15 @@ export const getCustomer = query({
     return document
   },
 })
+export const getSupplier = query({
+  args: {
+    id: v.id('suppliers'),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.get(args.id)
+    return document
+  },
+})
 
 export const updateCustomer = mutation({
   args: {
@@ -314,3 +323,42 @@ export const subtrackFromWarehouse = mutation({
   },
 })
 
+export const getSalesinDateRange = query({
+  args: {
+    start: v.number(),
+    end: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const documents = await ctx.db
+      .query('sales')
+      .filter((q) =>
+        q.and(
+          q.gte(q.field('_creationTime'), args.start),
+          q.lte(q.field('_creationTime'), args.end + 86400000)
+        )
+      )
+      .collect()
+
+    return documents
+  },
+})
+
+export const getIntakesinDateRange = query({
+  args: {
+    start: v.number(),
+    end: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const documents = await ctx.db
+      .query('intakes')
+      .filter((q) =>
+        q.and(
+          q.gte(q.field('_creationTime'), args.start),
+          q.lte(q.field('_creationTime'), args.end + 86400000)
+        )
+      )
+      .collect()
+
+    return documents
+  },
+})

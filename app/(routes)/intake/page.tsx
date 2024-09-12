@@ -17,7 +17,7 @@ import IntakeList from './_components/IntakeList'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 
-const page = () => {
+const Page = () => {
   const [search, setSearch] = useState('')
   const { supplier, totalBuyPrice, clear, products } = useIntake()
   const createIntake = useMutation(api.documents.createIntake)
@@ -93,4 +93,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

@@ -22,7 +22,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import PrintComponent from './_components/PrintComponent'
 
-const page = () => {
+const Page = () => {
   const { customer, totalSellPrice, clear, products, payment, paymentChange } =
     useSale()
   const { toast } = useToast()
@@ -143,4 +143,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

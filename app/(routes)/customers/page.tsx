@@ -1,25 +1,21 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useMutation, useQuery } from 'convex/react'
+import { useQuery } from 'convex/react'
 
-import { Id, Doc } from '@/convex/_generated/dataModel'
+import { Doc } from '@/convex/_generated/dataModel'
 import { api } from '@/convex/_generated/api'
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
-// import SupplierItem from './_components/SupplierItem'
-// import AddSupplier from './_components/AddSupplier'
 import SearchBar from './_components/SearchBar'
-// import AddProduct from './_components/AddProduct'
 import CustomerList from './_components/CustomerList'
-import { cn } from '@/lib/utils'
 import AddCustomer from './_components/AddCustomer'
 import EditCustomer from './_components/EditCustomer'
 
-const page = () => {
+const Page = () => {
   const docs = useQuery(api.documents.getCustomers)
   const [active, setActive] = useState<Doc<'customers'> | null>(null)
   const [customers, setCustomers] = useState<Doc<'customers'>[]>([])
@@ -40,8 +36,6 @@ const page = () => {
   const handleClick = (customer: Doc<'customers'>) => {
     setActive(customer)
   }
-
-  console.log(active)
 
   return (
     <ResizablePanelGroup direction='horizontal'>
@@ -69,4 +63,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

@@ -74,7 +74,7 @@ const Navbar = () => {
       <Button asChild variant='link'>
         <Link href='/history' className={getLinkClasses('/history')}>
           <History className='mr-2 h-6 w-6' />
-          <span className='text-lg'>Savdo tarixi</span>
+          <span className='text-lg'>Kirim-chiqim tarixi</span>
         </Link>
       </Button>
       <Separator className='h-6 w-px bg-accent-foreground' />

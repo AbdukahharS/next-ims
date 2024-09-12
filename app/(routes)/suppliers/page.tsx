@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useMutation, useQuery } from 'convex/react'
+import { useQuery } from 'convex/react'
 
-import { Id, Doc } from '@/convex/_generated/dataModel'
+import { Id } from '@/convex/_generated/dataModel'
 import { api } from '@/convex/_generated/api'
 import {
   ResizableHandle,
@@ -17,7 +17,7 @@ import AddProduct from './_components/AddProduct'
 import { cn } from '@/lib/utils'
 import ProductsList from './_components/ProductsList'
 
-const page = () => {
+const Page = () => {
   const docs = useQuery(api.documents.getSuppliers)
   const [activeId, setActiveId] = useState<Id<'suppliers'> | null>(null)
   const [suppliers, setSuppliers] = useState(docs)
@@ -83,4 +83,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

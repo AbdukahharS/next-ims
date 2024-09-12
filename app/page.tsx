@@ -90,7 +90,7 @@ export default function Home() {
       >
         <Link href='/history'>
           <History className='mr-4' size={42} />
-          <span className='text-3xl'>Savdo tarixi</span>
+          <span className='text-3xl'>Kirim-chiqim tarixi</span>
         </Link>
       </Button>
       <Button
