@@ -84,7 +84,12 @@ const useSale = create<SaleStore>((set, get) => ({
     }))
   },
   clear: () => {
-    set({ customer: null, products: [], totalSellPrice: 0 })
+    set({
+      customer: null,
+      products: [],
+      totalSellPrice: 0,
+      payment: { cash: 0, card: 0 },
+    })
   },
   paymentChange: (cash, card) => {
     set((prev) => ({

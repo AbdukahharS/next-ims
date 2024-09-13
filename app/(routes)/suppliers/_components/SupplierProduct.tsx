@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useMutation } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import { Check, Pencil } from 'lucide-react'
 
 import { Id } from '@/convex/_generated/dataModel'
@@ -24,6 +24,7 @@ interface SupplierProductProps {
   sellPrice: number
   i: number
   unit: 'piece' | 'm' | 'kg' | 'm2'
+  category: Id<'categories'>
 }
 
 const SupplierProduct = ({
@@ -34,6 +35,7 @@ const SupplierProduct = ({
   sellPrice,
   i,
   unit,
+  category,
 }: SupplierProductProps) => {
   const [editing, setEditing] = useState(false)
   const [unitstate, setUnit] = useState<'piece' | 'm' | 'kg' | 'm2'>(unit)
@@ -41,9 +43,11 @@ const SupplierProduct = ({
   const nameInputRef = useRef<HTMLInputElement>(null)
   const buyPriceInputRef = useRef<HTMLInputElement>(null)
   const sellPriceInputRef = useRef<HTMLInputElement>(null)
+  const [folder, setFolder] = useState<Id<'categories'> | undefined>(category)
 
   const { toast } = useToast()
   const updateSupplierProduct = useMutation(api.documents.updateSupplierProduct)
+  const categories = useQuery(api.documents.getCategories)
 
   const handleEdit = () => {
     setEditing(!editing)
@@ -68,6 +72,7 @@ const SupplierProduct = ({
       buyPrice: buyPriceValue,
       sellPrice: sellPriceValue,
       unit: unitstate,
+      category: folder,
     }
 
     try {
@@ -126,6 +131,29 @@ const SupplierProduct = ({
         ) : (
           <div className='text-foreground/60 truncate'>
             {unit === 'piece' ? 'dona' : unit}
+          </div>
+        )}
+      </td>
+      <td className='px-2'>
+        {editing ? (
+          <Select
+            value={folder || ''}
+            onValueChange={(v) => setFolder(v as Id<'categories'>)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="O'lchov birligi" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories?.map((c) => (
+                <SelectItem key={c._id} value={c._id}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className='text-foreground/60 truncate'>
+            {categories?.find((c) => c._id === category)?.name}
           </div>
         )}
       </td>

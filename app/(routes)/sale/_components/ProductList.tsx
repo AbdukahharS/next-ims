@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react'
 import { useQuery } from 'convex/react'
 
 // import SupplierProduct from './SupplierProduct'
 import { api } from '@/convex/_generated/api'
-import { Id, Doc } from '@/convex/_generated/dataModel'
+import { Id } from '@/convex/_generated/dataModel'
 import ProductItem from './ProductItem'
 
-const ProductList = ({ supplier }: { supplier: Id<'suppliers'> | null }) => {
-  if (!supplier) return null
-  const products = useQuery(api.documents.getWarehouseWithSupplier, {
-    supplier,
+const ProductList = ({ folder }: { folder: Id<'categories'> | null }) => {
+  if (!folder) return null
+  const products = useQuery(api.documents.getWarehouseWithFolder, {
+    folder,
   })
 
   return (
@@ -32,7 +31,7 @@ const ProductList = ({ supplier }: { supplier: Id<'suppliers'> | null }) => {
         </table>
       ) : (
         <p className='text-center text-xl flex-1 mt-8'>
-          Bu ta'minotchi uchun mahsulotlar topilmadi
+          Bu papkada mahsulotlar topilmadi
         </p>
       )}
     </div>

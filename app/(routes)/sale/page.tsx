@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/resizable'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import SelectSupplier from './_components/SelectSupplier'
+import Folders from './_components/Folders'
 import useSale from '@/hooks/useSale'
 import { Id } from '@/convex/_generated/dataModel'
 import ProductList from './_components/ProductList'
@@ -26,7 +26,8 @@ const Page = () => {
   const { customer, totalSellPrice, clear, products, payment, paymentChange } =
     useSale()
   const { toast } = useToast()
-  const [supplier, setSupplier] = useState<Id<'suppliers'> | null>(null)
+  // const [supplier, setSupplier] = useState<Id<'suppliers'> | null>(null)
+  const [folder, setFolder] = useState<Id<'categories'> | null>(null)
   const [print, setPrint] = useState(false)
   const perfornmSale = useMutation(api.documents.perfornmSale)
   const subtrackFromWarehouse = useMutation(api.documents.subtrackFromWarehouse)
@@ -65,7 +66,7 @@ const Page = () => {
         handlePrint()
       }
       clear()
-      setSupplier(null)
+      setFolder(null)
       paymentChange(0, 0)
     } catch (error) {
       toast({
@@ -83,8 +84,15 @@ const Page = () => {
       >
         <ResizablePanel minSize={30}>
           <div className='w-full h-full overflow-x-auto flex flex-col'>
-            <SelectSupplier setSupplier={setSupplier} supplier={supplier} />
-            {!!supplier && <ProductList supplier={supplier} />}
+            <ResizablePanelGroup direction='horizontal'>
+              <ResizablePanel defaultSize={30} minSize={20}>
+                <Folders setFolder={setFolder} folder={folder} />
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={70} minSize={40}>
+                {!!folder && <ProductList folder={folder} />}
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />

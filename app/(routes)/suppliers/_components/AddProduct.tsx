@@ -1,13 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useMutation } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 
 import { api } from '@/convex/_generated/api'
 import { useToast } from '@/components/ui/use-toast'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
@@ -19,15 +18,15 @@ import { Label } from '@/components/ui/label'
 import { Id } from '@/convex/_generated/dataModel'
 
 const AddProduct = ({ activeId }: { activeId: Id<'suppliers'> }) => {
+  const categories = useQuery(api.documents.getCategories)
+  const createProduct = useMutation(api.documents.createSupplierProduct)
   const [name, setName] = useState('')
   const [buyPrice, setBuyPrice] = useState(0)
   const [sellPrice, setSellPrice] = useState(0)
   const [unit, setUnit] = useState<'piece' | 'm' | 'kg' | 'm2'>('piece')
-  const [enableFrac, setEnableFrac] = useState(false)
-  const [fracUnit, setFracUnit] = useState<'m' | 'kg' | 'm2'>('m')
-  const [fracWholeAmount, setFracWholeAmount] = useState(0)
+  const [category, setCategory] = useState<Id<'categories'> | null>(null)
+  const createFolder = useMutation(api.documents.createCategory)
 
-  const createProduct = useMutation(api.documents.createSupplierProduct)
   const { toast } = useToast()
 
   const handleClick = async () => {
@@ -55,21 +54,41 @@ const AddProduct = ({ activeId }: { activeId: Id<'suppliers'> }) => {
       return
     }
 
+    if (!category) {
+      toast({
+        title: 'Iltimos, papkani tanlang',
+        variant: 'destructive',
+      })
+      return
+    }
+
     await createProduct({
       name,
       supplier: activeId,
       buyPrice,
       sellPrice,
       unit,
+      category,
     })
 
     setName('')
     setBuyPrice(0)
     setSellPrice(0)
     setUnit('piece')
-    setEnableFrac(false)
-    setFracUnit('m')
-    setFracWholeAmount(0)
+  }
+
+  const handleFolderChange = async (v: string) => {
+    if (v === null) {
+      return
+    } else if (v === 'new') {
+      let name = window.prompt('Papkani nomini kiriting')
+      while (!name) {
+        name = window.prompt('Papkani nomini kiriting')
+      }
+      await createFolder({ name })
+    } else {
+      setCategory(v as Id<'categories'>)
+    }
   }
 
   return (
@@ -117,6 +136,22 @@ const AddProduct = ({ activeId }: { activeId: Id<'suppliers'> }) => {
               <SelectItem value='m2'>
                 m<sup>2</sup>
               </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className='grid w-full items-center gap-1.5'>
+          <Label>Papkani tanlash</Label>
+          <Select value={category || ''} onValueChange={handleFolderChange}>
+            <SelectTrigger className='w-[180px]'>
+              <SelectValue placeholder='Papkani tanlang' />
+            </SelectTrigger>
+            <SelectContent>
+              {categories?.map((c) => (
+                <SelectItem key={c._id} value={c._id}>
+                  {c.name}
+                </SelectItem>
+              ))}
+              <SelectItem value='new'>Yangi papka qo'shish</SelectItem>
             </SelectContent>
           </Select>
         </div>

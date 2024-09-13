@@ -11,6 +11,7 @@ type IntakeStore = {
     buyPrice: number
     sellPrice: number
     unit: 'piece' | 'm' | 'kg' | 'm2'
+    category: Id<'categories'>
   }[] // Make products an array that can be empty
   totalBuyPrice: number
   addItem: (
@@ -19,7 +20,8 @@ type IntakeStore = {
     amount: number,
     unit: 'piece' | 'm' | 'kg' | 'm2',
     name: string,
-    sellPrice: number
+    sellPrice: number,
+    category: Id<'categories'>
   ) => void
   setSupplier: (id: Id<'suppliers'>) => void
   changeAmount: (id: Id<'products'>, amount: number) => void
@@ -30,13 +32,13 @@ const useIntake = create<IntakeStore>((set, get) => ({
   supplier: null,
   products: [],
   totalBuyPrice: 0,
-  addItem: (id, buyPrice, amount, unit, name, sellPrice) => {
+  addItem: (id, buyPrice, amount, unit, name, sellPrice, category) => {
     set((prev) => ({
       ...prev,
       totalBuyPrice: prev.totalBuyPrice + buyPrice * amount,
       products: [
         ...prev.products,
-        { id, amount, buyPrice, unit, name, sellPrice },
+        { id, amount, buyPrice, unit, name, sellPrice, category },
       ],
     }))
   },

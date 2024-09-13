@@ -11,6 +11,7 @@ export default defineSchema({
     buyPrice: v.number(),
     sellPrice: v.number(),
     supplier: v.id('suppliers'),
+    category: v.id('categories'),
     unit: v.union(
       v.literal('piece'),
       v.literal('m'),
@@ -41,6 +42,7 @@ export default defineSchema({
   warehouse: defineTable({
     productId: v.id('products'),
     supplier: v.id('suppliers'),
+    category: v.id('categories'),
     name: v.string(),
     amount: v.number(),
     unit: v.union(
@@ -78,4 +80,7 @@ export default defineSchema({
       card: v.number(),
     }),
   }),
+  categories: defineTable({
+    name: v.string(),
+  }).index('by_name', ['name']),
 })

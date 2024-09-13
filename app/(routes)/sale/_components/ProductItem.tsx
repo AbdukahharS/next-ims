@@ -21,18 +21,21 @@ const ProductItem = ({
   i,
   unit,
 }: ProductItemProps) => {
-  const { addItem, products } = useSale()
+  const { addItem, products, customer } = useSale()
   const [minus, setMinus] = useState(0)
 
   useEffect(() => {
+    if (products.length === 0) return setMinus(0)
     products.forEach((p) => {
+      setMinus(0)
       if (p.id === _id) {
-        setMinus(p.amount)
+        return setMinus(p.amount)
       }
     })
   }, [products, _id])
 
   const handleClick = () => {
+    if (!customer) return alert('Xaridor tanlanmagan')
     let newAmount = Number(
       window.prompt(
         `${name} mahsulot miqdori(${unit === 'piece' ? 'dona' : unit}):`,

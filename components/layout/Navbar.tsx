@@ -31,14 +31,6 @@ const Navbar = () => {
       </Link>
       <Separator className='h-6 w-px bg-accent-foreground' />
 
-      {/* <Button asChild variant='link'>
-        <Link href='/warehouse' className={getLinkClasses('/warehouse')}>
-          <Warehouse className='mr-2 h-6 w-6' />
-          <span className='text-lg'>Ombor</span>
-        </Link>
-      </Button>
-      <Separator className='h-6 w-px bg-accent-foreground' /> */}
-
       <Button asChild variant='link'>
         <Link href='/sale' className={getLinkClasses('/sale')}>
           <ShoppingBag className='mr-2 h-6 w-6' />
@@ -78,6 +70,14 @@ const Navbar = () => {
         </Link>
       </Button>
       <Separator className='h-6 w-px bg-accent-foreground' />
+
+      {/* <Button asChild variant='link'>
+        <Link href='/warehouse' className={getLinkClasses('/warehouse')}>
+          <Warehouse className='mr-2 h-6 w-6' />
+          <span className='text-lg'>Ombor</span>
+        </Link>
+      </Button>
+      <Separator className='h-6 w-px bg-accent-foreground' /> */}
 
       {/* <Button asChild variant='link'>
         <Link href='/statistics' className={getLinkClasses('/statistics')}>

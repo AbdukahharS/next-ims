@@ -2,7 +2,7 @@ import { useQuery } from 'convex/react'
 
 import SupplierProduct from './SupplierProduct'
 import { api } from '@/convex/_generated/api'
-import { Id, Doc } from '@/convex/_generated/dataModel'
+import { Id } from '@/convex/_generated/dataModel'
 
 const ProductsList = ({ activeId }: { activeId: Id<'suppliers'> }) => {
   if (!activeId) return null
@@ -21,6 +21,8 @@ const ProductsList = ({ activeId }: { activeId: Id<'suppliers'> }) => {
               <th>Sotib olish narxi</th>
               <th>Sotish narxi</th>
               <th>Birligi</th>
+              <th>Papka</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

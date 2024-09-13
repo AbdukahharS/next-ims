@@ -68,6 +68,7 @@ export const getSupplierProducts = query({
 export const createSupplierProduct = mutation({
   args: {
     supplier: v.id('suppliers'),
+    category: v.id('categories'),
     name: v.string(),
     buyPrice: v.number(),
     sellPrice: v.number(),
@@ -85,6 +86,7 @@ export const createSupplierProduct = mutation({
       buyPrice: args.buyPrice,
       sellPrice: args.sellPrice,
       unit: args.unit,
+      category: args.category,
     })
 
     return document
@@ -98,6 +100,7 @@ export const updateSupplierProduct = mutation({
     name: v.optional(v.string()),
     buyPrice: v.optional(v.number()),
     sellPrice: v.optional(v.number()),
+    category: v.optional(v.id('categories')),
     unit: v.optional(
       v.union(
         v.literal('piece'),
@@ -166,18 +169,28 @@ export const addToWarehouse = mutation({
       v.literal('m2')
     ),
     sellPrice: v.number(),
+    category: v.id('categories'),
   },
   handler: async (ctx, args) => {
-    const document = await ctx.db.insert('warehouse', {
-      name: args.name,
-      amount: args.amount,
-      supplier: args.supplier,
-      unit: args.unit,
-      sellPrice: args.sellPrice,
-      productId: args._id,
-    })
-
-    return document
+    const existingDocument = await ctx.db
+      .query('warehouse')
+      .filter((q) => q.eq(q.field('productId'), args._id))
+      .collect()
+    if (existingDocument[0]) {
+      await ctx.db.patch(existingDocument[0]._id, {
+        amount: existingDocument[0].amount + args.amount,
+      })
+    } else {
+      const document = await ctx.db.insert('warehouse', {
+        name: args.name,
+        amount: args.amount,
+        supplier: args.supplier,
+        unit: args.unit,
+        sellPrice: args.sellPrice,
+        productId: args._id,
+        category: args.category,
+      })
+    }
   },
 })
 
@@ -272,6 +285,19 @@ export const getWarehouseWithSupplier = query({
       .filter((q) => q.eq(q.field('supplier'), args.supplier))
       .collect()
     return document
+  },
+})
+
+export const getWarehouseWithFolder = query({
+  args: {
+    folder: v.id('categories'),
+  },
+  handler: async (ctx, args) => {
+    const documents = await ctx.db
+      .query('warehouse')
+      .filter((q) => q.eq(q.field('category'), args.folder))
+      .collect()
+    return documents
   },
 })
 
@@ -380,5 +406,22 @@ export const getIntakesinDateRange = query({
       .collect()
 
     return documents
+  },
+})
+
+export const createCategory = mutation({
+  args: {
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.insert('categories', args)
+    return document
+  },
+})
+
+export const getCategories = query({
+  handler: async (ctx) => {
+    const documents = await ctx.db.query('categories').collect()
+    return documents.length ? documents : []
   },
 })

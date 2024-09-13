@@ -9,6 +9,7 @@ interface ProductItemProps {
   sellPrice: number
   i: number
   unit: 'piece' | 'm' | 'kg' | 'm2'
+  category: Id<'categories'>
 }
 
 const ProductItem = ({
@@ -18,6 +19,7 @@ const ProductItem = ({
   sellPrice,
   i,
   unit,
+  category,
 }: ProductItemProps) => {
   const { addItem } = useIntake()
 
@@ -32,7 +34,7 @@ const ProductItem = ({
       amount = Number(window.prompt('Mahsulot miqdorini to`g`ri kiriting:'))
     }
 
-    addItem(_id, buyPrice, amount, unit, name, sellPrice)
+    addItem(_id, buyPrice, amount, unit, name, sellPrice, category)
   }
   return (
     <tr
