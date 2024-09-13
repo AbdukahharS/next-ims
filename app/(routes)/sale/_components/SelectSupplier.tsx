@@ -1,5 +1,3 @@
-import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
 import { useQuery } from 'convex/react'
 
 import { Id } from '@/convex/_generated/dataModel'
@@ -14,14 +12,19 @@ import { api } from '@/convex/_generated/api'
 
 const SelectSupplier = ({
   setSupplier,
+  supplier,
 }: {
   setSupplier: (supplier: Id<'suppliers'> | null) => void
+  supplier: Id<'suppliers'> | null
 }) => {
   const suppliers = useQuery(api.documents.getSuppliers)
 
   return (
     <div className='w-full border-b relative'>
-      <Select onValueChange={(v) => setSupplier(v as Id<'suppliers'>)}>
+      <Select
+        onValueChange={(v) => setSupplier(v as Id<'suppliers'>)}
+        value={supplier?.toString() || ''}
+      >
         <SelectTrigger className='w-full'>
           <SelectValue placeholder='Taminotchini tanlang' />
         </SelectTrigger>

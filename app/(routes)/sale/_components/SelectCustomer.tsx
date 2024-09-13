@@ -15,11 +15,16 @@ import useSale from '@/hooks/useSale'
 
 const SelectCustomer = () => {
   const customers = useQuery(api.documents.getCustomers)
-  const { setCustomer } = useSale()
+  const { setCustomer, customer } = useSale()
+
+  console.log(customer?.toString())
 
   return (
     <div className='w-full border-b relative'>
-      <Select onValueChange={(v) => setCustomer(v as Id<'customers'>)}>
+      <Select
+        onValueChange={(v) => setCustomer(v as Id<'customers'>)}
+        value={customer?.toString() || ''}
+      >
         <SelectTrigger className='w-full'>
           <SelectValue placeholder='Mijozni tanlang' />
         </SelectTrigger>

@@ -36,8 +36,6 @@ const Page = () => {
     content: () => printRef.current,
   })
 
-  console.log(print)
-
   const handleSubmit = () => {
     if (!customer) return alert('Mijozni tanlang')
     const approval = window.confirm(
@@ -64,12 +62,11 @@ const Page = () => {
         })
       })
       if (print) {
-        console.log('smt')
-
         handlePrint()
       }
       clear()
       setSupplier(null)
+      paymentChange(0, 0)
     } catch (error) {
       toast({
         title: 'Qandaydir xatolik yuz berdi',
@@ -86,7 +83,7 @@ const Page = () => {
       >
         <ResizablePanel minSize={30}>
           <div className='w-full h-full overflow-x-auto flex flex-col'>
-            <SelectSupplier setSupplier={setSupplier} />
+            <SelectSupplier setSupplier={setSupplier} supplier={supplier} />
             {!!supplier && <ProductList supplier={supplier} />}
           </div>
         </ResizablePanel>

@@ -49,6 +49,8 @@ const ProductItem = ({
       )
     }
 
+    if (newAmount === 0) return
+
     addItem(_id, newAmount, unit, name, sellPrice)
   }
   return (
