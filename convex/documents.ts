@@ -425,3 +425,46 @@ export const getCategories = query({
     return documents.length ? documents : []
   },
 })
+
+export const getSalesOfCustomerToday = mutation({
+  args: {
+    customer: v.id('customers'),
+    localDayStart: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const documents = await ctx.db
+      .query('sales')
+      .filter((q) =>
+        q.and(
+          q.eq(q.field('customer'), args.customer),
+          q.gte(q.field('_creationTime'), args.localDayStart)
+        )
+      )
+      .collect()
+
+    return documents[0]
+  },
+})
+
+export const getWarehouses = query({
+  handler: async (ctx) => {
+    const documents = await ctx.db.query('warehouse').collect()
+    return documents
+  },
+})
+
+export const updateSalePayment = mutation({
+  args: {
+    _id: v.id('sales'),
+    payment: v.object({
+      cash: v.number(),
+      card: v.number(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.patch(args._id, {
+      payment: args.payment,
+    })
+    return document
+  },
+})

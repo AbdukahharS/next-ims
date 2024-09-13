@@ -24,15 +24,6 @@ interface SaleItemProps {
   customer: Id<'customers'>
 }
 
-function formatDate(date: number) {
-  const d = new Date(date)
-  const day = d.getDate()
-  const month = d.getMonth() + 1 // Months are zero-indexed
-  const year = d.getFullYear()
-
-  return `${day}.${month}.${year}`
-}
-
 const SaleItem = ({
   _id,
   totalSellPrice,
@@ -60,12 +51,24 @@ const SaleItem = ({
       </td>
       <td className='px-2'>
         <div className='text-foreground/60 truncate'>
-          {formatDate(_creationTime)}
+          {new Intl.NumberFormat('en-US').format(totalSellPrice)}
         </div>
       </td>
       <td className='px-2'>
         <div className='text-foreground/60 truncate'>
-          {new Intl.NumberFormat('en-US').format(totalSellPrice)}
+          {new Intl.NumberFormat('en-US').format(payment.cash)}
+        </div>
+      </td>
+      <td className='px-2'>
+        <div className='text-foreground/60 truncate'>
+          {new Intl.NumberFormat('en-US').format(payment.card)}
+        </div>
+      </td>
+      <td className='px-2'>
+        <div className='text-foreground/60 truncate'>
+          {new Intl.NumberFormat('en-US').format(
+            totalSellPrice - payment.cash - payment.card
+          )}
         </div>
       </td>
     </tr>

@@ -1,6 +1,8 @@
 import { create } from 'zustand'
+import { useQuery } from 'convex/react'
 
 import { Id } from '@/convex/_generated/dataModel'
+import { api } from '@/convex/_generated/api'
 
 type SaleStore = {
   customer: Id<'customers'> | null
@@ -27,6 +29,26 @@ type SaleStore = {
   changeAmount: (id: Id<'warehouse'>, amount: number) => void
   clear: () => void
   paymentChange: (cash?: number, card?: number) => void
+  setSale: ({
+    customer,
+    products,
+    totalSellPrice,
+    payment,
+  }: {
+    customer: Id<'customers'>
+    products: {
+      id: Id<'warehouse'>
+      name: string
+      amount: number
+      sellPrice: number
+      unit: 'piece' | 'm' | 'kg' | 'm2'
+    }[]
+    totalSellPrice: number
+    payment: {
+      cash: number
+      card: number
+    }
+  }) => void
 }
 
 const useSale = create<SaleStore>((set, get) => ({
@@ -68,6 +90,14 @@ const useSale = create<SaleStore>((set, get) => ({
   },
   setCustomer: (id) => {
     set({ customer: id })
+  },
+  setSale: ({ customer, products, totalSellPrice, payment }) => {
+    set({
+      customer,
+      products,
+      totalSellPrice,
+      payment,
+    })
   },
   changeAmount: (id, amount) => {
     set((prev) => ({

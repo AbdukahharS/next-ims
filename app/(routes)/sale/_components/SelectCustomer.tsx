@@ -1,6 +1,4 @@
-import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
-import { useQuery } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 
 import { Id } from '@/convex/_generated/dataModel'
 import {
@@ -15,14 +13,43 @@ import useSale from '@/hooks/useSale'
 
 const SelectCustomer = () => {
   const customers = useQuery(api.documents.getCustomers)
-  const { setCustomer, customer } = useSale()
+  const getTodaySale = useMutation(api.documents.getSalesOfCustomerToday)
+  const { setCustomer, customer, setSale } = useSale()
 
-  console.log(customer?.toString())
+  const handleSelectCustomer = async (v: string) => {
+    const now = new Date()
+    const midnight = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0,
+      0
+    )
+    const midnightTimestamp = midnight.getTime()
+
+    const todaySale = await getTodaySale({
+      customer: v as Id<'customers'>,
+      localDayStart: midnightTimestamp,
+    })
+
+    if (!!todaySale) {
+      setSale({
+        customer: v as Id<'customers'>,
+        products: todaySale.products,
+        totalSellPrice: todaySale.totalSellPrice,
+        payment: todaySale.payment,
+      })
+    } else {
+      setCustomer(v as Id<'customers'>)
+    }
+  }
 
   return (
     <div className='w-full border-b relative'>
       <Select
-        onValueChange={(v) => setCustomer(v as Id<'customers'>)}
+        onValueChange={handleSelectCustomer}
         value={customer?.toString() || ''}
       >
         <SelectTrigger className='w-full'>

@@ -15,9 +15,11 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useIsPhone } from '@/hooks/useIsPhone'
 
 const Login = () => {
-  const { loading, isAuthenticated, login } = useLogin()
+  const { login } = useLogin()
+  const isPhone = useIsPhone()
   const router = useRouter()
   const { toast } = useToast()
 
@@ -33,9 +35,11 @@ const Login = () => {
         variant: 'destructive',
       })
     } else {
-      console.log('w')
-
-      router.push('/')
+      if (isPhone) {
+        router.push('/mobile')
+      } else {
+        router.push('/')
+      }
     }
   }
 
