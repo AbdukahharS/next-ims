@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import {
+  Banknote,
   ChartNoAxesCombined,
   Download,
   Factory,
@@ -103,16 +104,16 @@ export default function Home() {
           <span className='text-3xl'>Ombor</span>
         </Link>
       </Button>
-      {/* <Button
+      <Button
         asChild
         variant='outline'
         className='w-full max-w-sm p-8 justify-start '
       >
-        <Link href='/statistics'>
-          <ChartNoAxesCombined className='mr-4' size={42} />
+        <Link href='/mobile/moneyentry'>
+          <Banknote className='mr-4' size={42} />
           <span className='text-3xl'>Statistika</span>
         </Link>
-      </Button> */}
+      </Button>
     </main>
   )
 }

@@ -66,6 +66,11 @@ const Page = () => {
           </table>
         </div>
       ))}
+      {warehouses?.length === 0 && (
+        <div className='w-full px-8 pt-20 text-center text-gray-600 text-2xl'>
+          Omborda hech qanday papka mavjud emas
+        </div>
+      )}
     </div>
   )
 }
