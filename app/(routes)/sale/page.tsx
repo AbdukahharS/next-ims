@@ -104,10 +104,6 @@ const Page = () => {
           totalSellPrice,
           payment: payment,
         })
-        await updateCustomerDebt({
-          _id: customer,
-          change: totalSellPrice - payment.cash - payment.card,
-        })
       }
 
       products.map((p) => {

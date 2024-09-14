@@ -1,6 +1,7 @@
 import { v } from 'convex/values'
 
 import { mutation, query } from './_generated/server'
+import { round } from '@/lib/utils'
 
 export const getSuppliers = query({
   handler: async (ctx) => {
@@ -83,8 +84,8 @@ export const createSupplierProduct = mutation({
     const document = await ctx.db.insert('products', {
       name: args.name,
       supplier: args.supplier,
-      buyPrice: args.buyPrice,
-      sellPrice: args.sellPrice,
+      buyPrice: round(args.buyPrice),
+      sellPrice: round(args.sellPrice),
       unit: args.unit,
       category: args.category,
     })
@@ -178,15 +179,15 @@ export const addToWarehouse = mutation({
       .collect()
     if (existingDocument[0]) {
       await ctx.db.patch(existingDocument[0]._id, {
-        amount: existingDocument[0].amount + args.amount,
+        amount: round(existingDocument[0].amount + args.amount),
       })
     } else {
       const document = await ctx.db.insert('warehouse', {
         name: args.name,
-        amount: args.amount,
+        amount: round(args.amount),
         supplier: args.supplier,
         unit: args.unit,
-        sellPrice: args.sellPrice,
+        sellPrice: round(args.sellPrice),
         productId: args._id,
         category: args.category,
       })
@@ -332,13 +333,17 @@ export const perfornmSale = mutation({
     const document = await ctx.db.insert('sales', {
       customer: args.customer,
       products: args.products,
-      totalSellPrice: args.totalSellPrice,
+      totalSellPrice: round(args.totalSellPrice),
       payment: args.payment,
     })
 
     await ctx.db.patch(args.customer, {
-      debt:
-        cust.debt + args.totalSellPrice - args.payment.cash - args.payment.card,
+      debt: round(
+        cust.debt +
+          round(args.totalSellPrice) -
+          args.payment.cash -
+          args.payment.card
+      ),
     })
 
     return document
@@ -363,7 +368,7 @@ export const subtrackFromWarehouse = mutation({
       await ctx.db.delete(id)
     } else {
       await ctx.db.patch(id, {
-        amount: existingDocument.amount - amount,
+        amount: round(existingDocument.amount - amount),
       })
     }
   },
@@ -500,7 +505,7 @@ export const updateSale = mutation({
   handler: async (ctx, args) => {
     const document = await ctx.db.patch(args._id, {
       products: args.products,
-      totalSellPrice: args.totalSellPrice,
+      totalSellPrice: round(args.totalSellPrice),
       payment: args.payment,
     })
     return document
