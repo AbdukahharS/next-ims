@@ -1,7 +1,6 @@
 import { Id } from '@/convex/_generated/dataModel'
 import useSale from '@/hooks/useSale'
 import { cn } from '@/lib/utils'
-import { useEffect, useState } from 'react'
 
 interface ProductItemProps {
   _id: Id<'warehouse'>
@@ -22,17 +21,6 @@ const ProductItem = ({
   unit,
 }: ProductItemProps) => {
   const { addItem, products, customer } = useSale()
-  const [minus, setMinus] = useState(0)
-
-  useEffect(() => {
-    if (products.length === 0) return setMinus(0)
-    products.forEach((p) => {
-      setMinus(0)
-      if (p.id === _id) {
-        return setMinus(p.amount)
-      }
-    })
-  }, [products, _id])
 
   const handleClick = () => {
     if (!customer) return alert('Xaridor tanlanmagan')
@@ -60,7 +48,7 @@ const ProductItem = ({
     <tr
       className={cn(
         'w-full h-8 cursor-pointer hover:bg-primary-foreground',
-        amount === minus && 'hidden'
+        products.some((p) => p.id === _id) && 'hidden'
       )}
       onClick={handleClick}
     >
@@ -75,7 +63,7 @@ const ProductItem = ({
       </td>
       <td className='px-2'>
         <div className='text-foreground/60 truncate'>
-          {amount - minus} {unit === 'piece' ? 'dona' : unit}
+          {amount} {unit === 'piece' ? 'dona' : unit}
         </div>
       </td>
     </tr>
