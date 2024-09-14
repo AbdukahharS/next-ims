@@ -11,7 +11,7 @@ interface SaleItemProps {
 }
 
 const SaleItem = ({ id, name, amount, sellPrice, unit, i }: SaleItemProps) => {
-  const { changeAmount } = useSale()
+  const { changeAmount, removeItem } = useSale()
 
   const handleClick = () => {
     let newAmount = Number(
@@ -25,6 +25,10 @@ const SaleItem = ({ id, name, amount, sellPrice, unit, i }: SaleItemProps) => {
       newAmount = Number(
         window.prompt('Mahsulot miqdorini to`g`ri kiriting:', amount.toString())
       )
+    }
+
+    if (newAmount === 0) {
+      removeItem(id)
     }
 
     changeAmount(id, newAmount)

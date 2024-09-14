@@ -183,10 +183,7 @@ const Page = () => {
                   />
                   <label>Chop etish</label>
                 </div>
-                <Button
-                  disabled={!products?.length || !customer}
-                  onClick={handleSubmit}
-                >
+                <Button disabled={!customer} onClick={handleSubmit}>
                   Savdoni tasdiqlash
                 </Button>
               </div>
