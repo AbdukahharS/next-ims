@@ -28,7 +28,8 @@ type SaleStore = {
   setCustomer: (id: Id<'customers'>) => void
   changeAmount: (id: Id<'warehouse'>, amount: number) => void
   clear: () => void
-  paymentChange: (cash?: number, card?: number) => void
+  paymentCash: (cash?: string) => void
+  paymentCard: (card?: string) => void
   setSale: ({
     customer,
     products,
@@ -121,12 +122,21 @@ const useSale = create<SaleStore>((set, get) => ({
       payment: { cash: 0, card: 0 },
     })
   },
-  paymentChange: (cash, card) => {
+  paymentCash: (cash) => {
     set((prev) => ({
       ...prev,
       payment: {
-        cash: cash || prev.payment.cash,
-        card: card || prev.payment.card,
+        cash: Number(cash),
+        card: prev.payment.card,
+      },
+    }))
+  },
+  paymentCard(card) {
+    set((prev) => ({
+      ...prev,
+      payment: {
+        card: Number(card),
+        cash: prev.payment.cash,
       },
     }))
   },

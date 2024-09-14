@@ -10,11 +10,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-function validateDate(dateString: string) {
-  const regex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(\d{4})$/
-  return regex.test(dateString)
-}
-
 interface Props {
   type: 'intake' | 'sale'
   setType: (type: 'intake' | 'sale') => void
@@ -28,13 +23,9 @@ const FilterBar = ({ type, setType, start, setStart, end, setEnd }: Props) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     if (name === 'start') {
-      //   if (validateDate(value)) {
       setStart(value)
-      //   }
     } else if (name === 'end') {
-      //   if (validateDate(value)) {
       setEnd(value)
-      //   }
     }
   }
 

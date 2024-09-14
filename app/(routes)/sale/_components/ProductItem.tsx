@@ -69,7 +69,9 @@ const ProductItem = ({
         <div className='w-full truncate'>{name}</div>
       </td>
       <td className='px-2'>
-        <div className='text-foreground/60 truncate'>{sellPrice}</div>
+        <div className='text-foreground/60 truncate'>
+          {new Intl.NumberFormat().format(sellPrice)}
+        </div>
       </td>
       <td className='px-2'>
         <div className='text-foreground/60 truncate'>

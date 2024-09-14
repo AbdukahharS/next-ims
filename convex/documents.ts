@@ -534,3 +534,21 @@ export const getCategory = query({
     return document
   },
 })
+
+export const updateCustomerDebt = mutation({
+  args: {
+    _id: v.id('customers'),
+    change: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.get(args._id)
+    if (!document) {
+      throw new Error('Document not found')
+    }
+    const newDebt = document.debt + args.change
+    const documentId = await ctx.db.patch(args._id, {
+      debt: newDebt,
+    })
+    return documentId
+  },
+})

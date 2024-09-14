@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { useMutation } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import { useReactToPrint } from 'react-to-print'
 
 import { api } from '@/convex/_generated/api'
@@ -24,8 +24,15 @@ import PrintComponent from './_components/PrintComponent'
 import { Label } from '@/components/ui/label'
 
 const Page = () => {
-  const { customer, totalSellPrice, clear, products, payment, paymentChange } =
-    useSale()
+  const {
+    customer,
+    totalSellPrice,
+    clear,
+    products,
+    payment,
+    paymentCash,
+    paymentCard,
+  } = useSale()
   const { toast } = useToast()
   const getTodaySale = useMutation(api.documents.getSalesOfCustomerToday)
   const updateSale = useMutation(api.documents.updateSale)
@@ -33,6 +40,7 @@ const Page = () => {
   const [print, setPrint] = useState(false)
   const perfornmSale = useMutation(api.documents.perfornmSale)
   const subtrackFromWarehouse = useMutation(api.documents.subtrackFromWarehouse)
+  const updateCustomerDebt = useMutation(api.documents.updateCustomerDebt)
   const printRef = useRef<HTMLDivElement | null>(null)
 
   const handlePrint = useReactToPrint({
@@ -64,6 +72,13 @@ const Page = () => {
       })
 
       if (!!todaySale) {
+        await updateCustomerDebt({
+          _id: customer,
+          change:
+            todaySale.payment.cash -
+            payment.cash +
+            (todaySale.payment.card - payment.card),
+        })
         await updateSale({
           _id: todaySale._id,
           products: products.map((p) => ({
@@ -89,6 +104,10 @@ const Page = () => {
           totalSellPrice,
           payment: payment,
         })
+        await updateCustomerDebt({
+          _id: customer,
+          change: totalSellPrice - payment.cash - payment.card,
+        })
       }
 
       products.map((p) => {
@@ -102,7 +121,6 @@ const Page = () => {
       }
       clear()
       setFolder(null)
-      paymentChange(0, 0)
     } catch (error) {
       toast({
         title: 'Qandaydir xatolik yuz berdi',
@@ -143,7 +161,7 @@ const Page = () => {
                     placeholder='Naqd'
                     type='number'
                     value={payment.cash}
-                    onChange={(e) => paymentChange(Number(e.target.value))}
+                    onChange={(e) => paymentCash(e.target.value)}
                   />
                 </div>
                 <div className='grid w-full max-w-sm items-center gap-1.5'>
@@ -152,9 +170,7 @@ const Page = () => {
                     placeholder='Plastik'
                     value={payment.card}
                     type='number'
-                    onChange={(e) =>
-                      paymentChange(payment.cash, Number(e.target.value))
-                    }
+                    onChange={(e) => paymentCard(e.target.value)}
                   />
                 </div>
               </div>
