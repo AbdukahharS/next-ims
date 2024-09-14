@@ -21,12 +21,14 @@ import SelectCustomer from './_components/SelectCustomer'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import PrintComponent from './_components/PrintComponent'
+import { Label } from '@/components/ui/label'
 
 const Page = () => {
   const { customer, totalSellPrice, clear, products, payment, paymentChange } =
     useSale()
   const { toast } = useToast()
-  // const [supplier, setSupplier] = useState<Id<'suppliers'> | null>(null)
+  const getTodaySale = useMutation(api.documents.getSalesOfCustomerToday)
+  const updateSale = useMutation(api.documents.updateSale)
   const [folder, setFolder] = useState<Id<'categories'> | null>(null)
   const [print, setPrint] = useState(false)
   const perfornmSale = useMutation(api.documents.perfornmSale)
@@ -37,25 +39,58 @@ const Page = () => {
     content: () => printRef.current,
   })
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!customer) return alert('Mijozni tanlang')
     const approval = window.confirm(
       'Tanlangan mahsulotlar sotuvini tasdiqlaysizmi?'
     )
     if (!approval) return
     try {
-      perfornmSale({
+      const now = new Date()
+      const midnight = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        0,
+        0,
+        0,
+        0
+      )
+      const midnightTimestamp = midnight.getTime()
+
+      const todaySale = await getTodaySale({
         customer,
-        products: products.map((p) => ({
-          amount: p.amount,
-          sellPrice: p.sellPrice,
-          id: p.id,
-          name: p.name,
-          unit: p.unit,
-        })),
-        totalSellPrice,
-        payment: payment,
+        localDayStart: midnightTimestamp,
       })
+
+      if (!!todaySale) {
+        await updateSale({
+          _id: todaySale._id,
+          products: products.map((p) => ({
+            amount: p.amount,
+            sellPrice: p.sellPrice,
+            id: p.id,
+            name: p.name,
+            unit: p.unit,
+          })),
+          totalSellPrice,
+          payment: payment,
+        })
+      } else {
+        await perfornmSale({
+          customer,
+          products: products.map((p) => ({
+            amount: p.amount,
+            sellPrice: p.sellPrice,
+            id: p.id,
+            name: p.name,
+            unit: p.unit,
+          })),
+          totalSellPrice,
+          payment: payment,
+        })
+      }
+
       products.map((p) => {
         subtrackFromWarehouse({
           id: p.id,
@@ -102,20 +137,26 @@ const Page = () => {
             <SaleList />
             <div className='w-full'>
               <div className='w-full flex gap-4 px-4 py-2 border-t items-center'>
-                <Input
-                  placeholder='Naqd'
-                  type='number'
-                  defaultValue={payment.cash}
-                  onChange={(e) => paymentChange(Number(e.target.value))}
-                />
-                <Input
-                  placeholder='Plastik'
-                  defaultValue={payment.card}
-                  type='number'
-                  onChange={(e) =>
-                    paymentChange(payment.cash, Number(e.target.value))
-                  }
-                />
+                <div className='grid w-full max-w-sm items-center gap-1.5'>
+                  <Label>Naqd:</Label>
+                  <Input
+                    placeholder='Naqd'
+                    type='number'
+                    value={payment.cash}
+                    onChange={(e) => paymentChange(Number(e.target.value))}
+                  />
+                </div>
+                <div className='grid w-full max-w-sm items-center gap-1.5'>
+                  <Label>Bank:</Label>
+                  <Input
+                    placeholder='Plastik'
+                    value={payment.card}
+                    type='number'
+                    onChange={(e) =>
+                      paymentChange(payment.cash, Number(e.target.value))
+                    }
+                  />
+                </div>
               </div>
               <div className='w-full flex justify-between px-4 py-2 items-center'>
                 <span>

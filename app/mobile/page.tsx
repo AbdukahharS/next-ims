@@ -111,7 +111,7 @@ export default function Home() {
       >
         <Link href='/mobile/moneyentry'>
           <Banknote className='mr-4' size={42} />
-          <span className='text-3xl'>Statistika</span>
+          <span className='text-3xl'>Pul kirimi</span>
         </Link>
       </Button>
     </main>

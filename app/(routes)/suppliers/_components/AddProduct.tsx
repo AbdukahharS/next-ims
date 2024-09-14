@@ -82,10 +82,9 @@ const AddProduct = ({ activeId }: { activeId: Id<'suppliers'> }) => {
       return
     } else if (v === 'new') {
       let name = window.prompt('Papkani nomini kiriting')
-      while (!name) {
-        name = window.prompt('Papkani nomini kiriting')
-      }
-      await createFolder({ name })
+      if (!name) return
+      const smt = await createFolder({ name })
+      setCategory(smt)
     } else {
       setCategory(v as Id<'categories'>)
     }

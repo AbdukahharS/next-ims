@@ -64,7 +64,7 @@ const Page = () => {
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel minSize={30}>
+      <ResizablePanel defaultSize={60} minSize={50}>
         <div
           className={cn(
             'w-full h-full flex flex-col',

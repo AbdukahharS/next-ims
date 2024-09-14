@@ -414,14 +414,19 @@ export const createCategory = mutation({
     name: v.string(),
   },
   handler: async (ctx, args) => {
-    const document = await ctx.db.insert('categories', args)
-    return document
+    const documentId = await ctx.db.insert('categories', args)
+
+    return documentId
   },
 })
 
 export const getCategories = query({
   handler: async (ctx) => {
-    const documents = await ctx.db.query('categories').collect()
+    const documents = await ctx.db
+      .query('categories')
+      .withIndex('by_name')
+      .order('asc')
+      .collect()
     return documents.length ? documents : []
   },
 })
@@ -465,6 +470,67 @@ export const updateSalePayment = mutation({
     const document = await ctx.db.patch(args._id, {
       payment: args.payment,
     })
+    return document
+  },
+})
+
+export const updateSale = mutation({
+  args: {
+    _id: v.id('sales'),
+    products: v.array(
+      v.object({
+        id: v.id('warehouse'),
+        amount: v.number(),
+        sellPrice: v.number(),
+        name: v.string(),
+        unit: v.union(
+          v.literal('piece'),
+          v.literal('m'),
+          v.literal('kg'),
+          v.literal('m2')
+        ),
+      })
+    ),
+    totalSellPrice: v.number(),
+    payment: v.object({
+      cash: v.number(),
+      card: v.number(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.patch(args._id, {
+      products: args.products,
+      totalSellPrice: args.totalSellPrice,
+      payment: args.payment,
+    })
+    return document
+  },
+})
+
+export const getWarehouseWithProductId = query({
+  args: {
+    id: v.id('products'),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db
+      .query('warehouse')
+      .filter((q) => q.eq(q.field('productId'), args.id))
+      .first()
+
+    return document
+  },
+})
+
+export const getCategory = query({
+  args: {
+    id: v.id('categories'),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db
+      .query('categories')
+      .filter((q) => q.eq(q.field('_id'), args.id))
+      .first()
+
     return document
   },
 })

@@ -23,7 +23,8 @@ type IntakeStore = {
     sellPrice: number,
     category: Id<'categories'>
   ) => void
-  setSupplier: (id: Id<'suppliers'>) => void
+  removeItem: (id: Id<'products'>) => void
+  setSupplier: (id: Id<'suppliers'> | null) => void
   changeAmount: (id: Id<'products'>, amount: number) => void
   clear: () => void
 }
@@ -58,6 +59,12 @@ const useIntake = create<IntakeStore>((set, get) => ({
   },
   clear: () => {
     set({ supplier: null, products: [], totalBuyPrice: 0 })
+  },
+  removeItem: (id) => {
+    set((prev) => ({
+      ...prev,
+      products: prev.products.filter((p) => p.id !== id),
+    }))
   },
 }))
 

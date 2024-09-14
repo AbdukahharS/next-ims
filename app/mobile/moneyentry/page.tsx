@@ -42,63 +42,67 @@ const Page = () => {
       return
     }
 
-    const now = new Date()
-    const midnight = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      0,
-      0,
-      0,
-      0
-    )
-    const midnightTimestamp = midnight.getTime()
+    try {
+      const now = new Date()
+      const midnight = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        0,
+        0,
+        0,
+        0
+      )
+      const midnightTimestamp = midnight.getTime()
 
-    const todaySale = await getTodaySale({
-      customer: customer as Id<'customers'>,
-      localDayStart: midnightTimestamp,
-    })
-
-    if (!!todaySale) {
-      await updateSalePayment({
-        _id: todaySale._id,
-        payment: {
-          cash: todaySale.payment.cash + cash,
-          card: todaySale.payment.card + card,
-        },
-      })
-    } else {
-      await createSale({
+      const todaySale = await getTodaySale({
         customer: customer as Id<'customers'>,
-        products: [],
-        totalSellPrice: 0,
-        payment: {
-          cash,
-          card,
-        },
+        localDayStart: midnightTimestamp,
       })
+
+      if (!!todaySale) {
+        await updateSalePayment({
+          _id: todaySale._id,
+          payment: {
+            cash: todaySale.payment.cash + cash,
+            card: todaySale.payment.card + card,
+          },
+        })
+      } else {
+        await createSale({
+          customer: customer as Id<'customers'>,
+          products: [],
+          totalSellPrice: 0,
+          payment: {
+            cash,
+            card,
+          },
+        })
+      }
+
+      await updateCustomer({
+        id: customer as Id<'customers'>,
+        debt:
+          (customers?.find((c) => c._id === customer)?.debt || 0) - cash - card,
+      })
+
+      setCustomer(null)
+      setCash(0)
+      setCard(0)
+
+      toast({
+        title: 'Pul kiritildi',
+      })
+    } catch (error) {
+      toast({ title: 'Xatolik yuz berdi', variant: 'destructive' })
     }
-
-    await updateCustomer({
-      id: customer as Id<'customers'>,
-      debt:
-        (customers?.find((c) => c._id === customer)?.debt || 0) - cash - card,
-    })
-
-    setCustomer(null)
-    setCash(0)
-    setCard(0)
-
-    toast({
-      title: 'Pul kiritildi',
-    })
   }
 
   return (
     <div className='w-full flex justify-between py-20 px-8 flex-col gap-4'>
       <h1 className='text-2xl font-bold'>Mijoz uchun pul kirimi</h1>
       <Select
-        onValueChange={(v) => setCustomer(v as Id<'customers'>)}
+        onValueChange={(v: Id<'customers'>) => setCustomer(v)}
         value={customer?.toString() || ''}
       >
         <SelectTrigger className='w-full'>

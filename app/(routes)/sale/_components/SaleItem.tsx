@@ -40,7 +40,9 @@ const SaleItem = ({ id, name, amount, sellPrice, unit, i }: SaleItemProps) => {
         <div className='w-full truncate'>{name}</div>
       </td>
       <td className='px-2'>
-        <div className='text-foreground/60 truncate'>{sellPrice}</div>
+        <div className='text-foreground/60 truncate'>
+          {new Intl.NumberFormat().format(sellPrice)}
+        </div>
       </td>
       <td>
         <div className='text-foreground/60 truncate'>
@@ -48,7 +50,9 @@ const SaleItem = ({ id, name, amount, sellPrice, unit, i }: SaleItemProps) => {
         </div>
       </td>
       <td>
-        <div className='text-foreground/60 truncate'>{sellPrice * amount}</div>
+        <div className='text-foreground/60 truncate'>
+          {new Intl.NumberFormat().format(sellPrice * amount)}
+        </div>
       </td>
     </tr>
   )

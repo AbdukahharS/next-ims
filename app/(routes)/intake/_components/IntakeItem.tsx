@@ -18,7 +18,7 @@ const IntakeItem = ({
   unit,
   i,
 }: IntakeItemProps) => {
-  const { changeAmount } = useIntake()
+  const { changeAmount, removeItem } = useIntake()
 
   const handleClick = () => {
     let newAmount = Number(
@@ -34,6 +34,13 @@ const IntakeItem = ({
       )
     }
 
+    if (newAmount === 0) {
+      removeItem(id)
+      return
+    }
+    if (!newAmount) return
+    if (newAmount === amount) return
+
     changeAmount(id, newAmount)
   }
 
@@ -47,7 +54,9 @@ const IntakeItem = ({
         <div className='w-full truncate'>{name}</div>
       </td>
       <td className='px-2'>
-        <div className='text-foreground/60 truncate'>{buyPrice}</div>
+        <div className='text-foreground/60 truncate'>
+          {new Intl.NumberFormat().format(buyPrice)}
+        </div>
       </td>
       <td className='px-2'>
         <div className='text-foreground/60 truncate'>

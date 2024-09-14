@@ -62,7 +62,7 @@ const SelectCustomer = () => {
                 <span>
                   {customer.name} ({customer.phone})
                 </span>
-                <span>{customer.debt}</span>
+                <span>{new Intl.NumberFormat().format(customer.debt)}</span>
               </div>
             </SelectItem>
           ))}
