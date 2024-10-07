@@ -158,7 +158,7 @@ const PrintComponent = () => {
   //   id: customer,
   // })
   return (
-    <div className='w-full bg-background p-4 text-sm'>
+    <div className='w-full bg-background p-4 text-xs'>
       <div className='w-full flex justify-between border-b pb-1'>
         <b>ISM</b>
         <span>Qarz: 3245.34</span>
