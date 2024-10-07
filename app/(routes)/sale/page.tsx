@@ -48,70 +48,70 @@ const Page = () => {
   })
 
   const handleSubmit = async () => {
-    if (!customer) return alert('Mijozni tanlang')
+    // if (!customer) return alert('Mijozni tanlang')
     const approval = window.confirm(
       'Tanlangan mahsulotlar sotuvini tasdiqlaysizmi?'
     )
     if (!approval) return
     try {
-      const now = new Date()
-      const midnight = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        0,
-        0,
-        0,
-        0
-      )
-      const midnightTimestamp = midnight.getTime()
+      // const now = new Date()
+      // const midnight = new Date(
+      //   now.getFullYear(),
+      //   now.getMonth(),
+      //   now.getDate(),
+      //   0,
+      //   0,
+      //   0,
+      //   0
+      // )
+      // const midnightTimestamp = midnight.getTime()
 
-      const todaySale = await getTodaySale({
-        customer,
-        localDayStart: midnightTimestamp,
-      })
+      // const todaySale = await getTodaySale({
+      //   customer,
+      //   localDayStart: midnightTimestamp,
+      // })
 
-      if (!!todaySale) {
-        await updateCustomerDebt({
-          _id: customer,
-          change:
-            todaySale.payment.cash -
-            payment.cash +
-            (todaySale.payment.card - payment.card),
-        })
-        await updateSale({
-          _id: todaySale._id,
-          products: products.map((p) => ({
-            amount: p.amount,
-            sellPrice: p.sellPrice,
-            id: p.id,
-            name: p.name,
-            unit: p.unit,
-          })),
-          totalSellPrice,
-          payment: payment,
-        })
-      } else {
-        await perfornmSale({
-          customer,
-          products: products.map((p) => ({
-            amount: p.amount,
-            sellPrice: p.sellPrice,
-            id: p.id,
-            name: p.name,
-            unit: p.unit,
-          })),
-          totalSellPrice,
-          payment: payment,
-        })
-      }
+      // if (!!todaySale) {
+      //   await updateCustomerDebt({
+      //     _id: customer,
+      //     change:
+      //       todaySale.payment.cash -
+      //       payment.cash +
+      //       (todaySale.payment.card - payment.card),
+      //   })
+      //   await updateSale({
+      //     _id: todaySale._id,
+      //     products: products.map((p) => ({
+      //       amount: p.amount,
+      //       sellPrice: p.sellPrice,
+      //       id: p.id,
+      //       name: p.name,
+      //       unit: p.unit,
+      //     })),
+      //     totalSellPrice,
+      //     payment: payment,
+      //   })
+      // } else {
+      //   await perfornmSale({
+      //     customer,
+      //     products: products.map((p) => ({
+      //       amount: p.amount,
+      //       sellPrice: p.sellPrice,
+      //       id: p.id,
+      //       name: p.name,
+      //       unit: p.unit,
+      //     })),
+      //     totalSellPrice,
+      //     payment: payment,
+      //   })
+      // }
 
-      products.map((p) => {
-        subtrackFromWarehouse({
-          id: p.id,
-          amount: p.amount,
-        })
-      })
+      // products.map((p) => {
+      //   subtrackFromWarehouse({
+      //     id: p.id,
+      //     amount: p.amount,
+      //   })
+      // })
       if (print) {
         handlePrint()
       }
@@ -191,7 +191,7 @@ const Page = () => {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-      <div ref={printRef} className='w-full absolute top-0 z-[-10]'>
+      <div ref={printRef} className='w-[48%] absolute top-0 z-[-10]'>
         {customer && <PrintComponent />}
       </div>
     </>

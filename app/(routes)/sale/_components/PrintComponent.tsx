@@ -158,7 +158,7 @@ const PrintComponent = () => {
     id: customer,
   })
   return (
-    <div className='w-[50%] bg-background p-4 text-sm'>
+    <div className='w-full bg-background p-4 text-sm'>
       <div className='w-full flex justify-between border-b pb-1'>
         <b>{customerObj?.name}</b>
         <span>
