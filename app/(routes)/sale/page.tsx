@@ -190,7 +190,7 @@ const Page = () => {
         </ResizablePanel>
       </ResizablePanelGroup>
       <div ref={printRef} className='w-[48%] absolute top-0 z-[-10]'>
-        {customer && <PrintComponent />}
+        {<PrintComponent />}
       </div>
     </>
   )
