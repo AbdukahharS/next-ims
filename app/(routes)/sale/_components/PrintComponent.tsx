@@ -150,20 +150,18 @@ const products = [
 
 const PrintComponent = () => {
   const { customer, totalSellPrice, payment } = useSale()
-  console.log(customer)
-  if (!customer) {
-    return <div>Loading...</div> // or some other fallback component
-  }
-  const customerObj = useQuery(api.documents.getCustomer, {
-    id: customer,
-  })
+  // console.log(customer)
+  // if (!customer) {
+  //   return <div>Loading...</div> // or some other fallback component
+  // }
+  // const customerObj = useQuery(api.documents.getCustomer, {
+  //   id: customer,
+  // })
   return (
     <div className='w-full bg-background p-4 text-sm'>
       <div className='w-full flex justify-between border-b pb-1'>
-        <b>{customerObj?.name}</b>
-        <span>
-          Qarz: {new Intl.NumberFormat('en-US').format(customerObj?.debt || 0)}
-        </span>
+        <b>ISM</b>
+        <span>Qarz: 3245.34</span>
         <span>{new Date().toLocaleString('en-US', { hour12: false })}</span>
       </div>
       <table className='w-full table-auto mt-3 print-table'>
