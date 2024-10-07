@@ -72,3 +72,21 @@ table, th, td {
   border: 1px solid hsl(var(--border));
   border-collapse: collapse;
 }
+
+.print-table {
+  th, td {border: 1px solid black;}
+  /* border: none;
+
+  td {
+    border: none;
+  }
+
+  th {
+    border: 1px solid black;
+    font-weight: normal;
+  }
+  
+  tr {
+    border-bottom: 1px solid black;
+  } */
+}

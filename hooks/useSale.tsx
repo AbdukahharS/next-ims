@@ -1,8 +1,6 @@
 import { create } from 'zustand'
-import { useQuery } from 'convex/react'
 
 import { Id } from '@/convex/_generated/dataModel'
-import { api } from '@/convex/_generated/api'
 
 type SaleStore = {
   customer: Id<'customers'> | null

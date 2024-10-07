@@ -1,16 +1,12 @@
 import withPWA from 'next-pwa'
 
-const withPWAConfig = withPWA({
+const withPWAConfig = {
   dest: 'public',
   disable: process.env.NODE_ENV === 'development',
   register: true,
   skipWaiting: true,
-})
-
-/** @type {import('next').NextConfig} */
-const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
 }
 
-export default withPWAConfig(nextConfig)
+export default withPWA(withPWAConfig)
