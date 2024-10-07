@@ -183,9 +183,7 @@ const Page = () => {
                   />
                   <label>Chop etish</label>
                 </div>
-                <Button disabled={!customer} onClick={handleSubmit}>
-                  Savdoni tasdiqlash
-                </Button>
+                <Button onClick={handleSubmit}>Savdoni tasdiqlash</Button>
               </div>
             </div>
           </div>
